@@ -7,40 +7,34 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    /* Notion-style custom properties */
+    /* Modern, Vibrant Theme Custom Properties */
     :root {
-      --notion-gray-50: #f7f7f5;
-      --notion-gray-100: #ebebea;
-      --notion-gray-200: #e0e0de;
-      --notion-gray-300: #d1d0ce;
-      --notion-gray-400: #b8b7b5;
-      --notion-gray-500: #a5a4a2;
-      --notion-gray-600: #888782;
-      --notion-gray-700: #6e6d6a;
-      --notion-gray-800: #565653;
-      --notion-gray-900: #3f3f3c;
-      --notion-blue: #0969da;
-      --notion-blue-light: #dbeafe;
-      --notion-border: #e9e9e7;
-      --notion-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-      --notion-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.15);
+      --primary-color: #4A90E2; /* A strong blue */
+      --secondary-color: #7ED321; /* A vibrant green for accent */
+      --background-light: #F8F8F8; /* Light gray background */
+      --background-card: #FFFFFF; /* White card background */
+      --text-dark: #333333; /* Dark gray for main text */
+      --text-medium: #666666; /* Medium gray for secondary text */
+      --text-light: #999999; /* Light gray for subtle text */
+      --border-color: #E0E0E0; /* Light gray border */
+      --shadow-base: rgba(0, 0, 0, 0.05);
+      --shadow-hover: rgba(0, 0, 0, 0.1);
+      --quote-border: #D0D0D0; /* Lighter border for quotes */
     }
 
     /* Dark mode specific properties */
     html.dark {
-      --notion-gray-50: #2f2f2f;
-      --notion-gray-100: #383838;
-      --notion-gray-200: #404040;
-      --notion-gray-300: #4a4a4a;
-      --notion-gray-400: #666666;
-      --notion-gray-500: #7a7a7a;
-      --notion-gray-600: #9b9b9b;
-      --notion-gray-700: #b8b8b8;
-      --notion-gray-800: #d1d1d1;
-      --notion-gray-900: #e6e6e6;
-      --notion-blue: #5b9bd5;
-      --notion-border: #404040;
-      --notion-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+      --primary-color: #64B5F6; /* Lighter blue for dark mode */
+      --secondary-color: #A5D6A7; /* Lighter green for dark mode */
+      --background-light: #2C2C2C; /* Dark background */
+      --background-card: #3C3C3C; /* Slightly lighter dark for cards */
+      --text-dark: #E0E0E0; /* Light gray for main text */
+      --text-medium: #B0B0B0; /* Medium light gray for secondary text */
+      --text-light: #808080; /* Darker gray for subtle text */
+      --border-color: #4A4A4A; /* Darker border */
+      --shadow-base: rgba(0, 0, 0, 0.2);
+      --shadow-hover: rgba(0, 0, 0, 0.3);
+      --quote-border: #5A5A5A; /* Darker border for quotes */
     }
 
     * {
@@ -48,19 +42,19 @@
     }
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background-color: var(--notion-gray-50);
-      color: var(--notion-gray-900);
-      line-height: 1.6;
+      background-color: var(--background-light);
+      color: var(--text-dark);
+      line-height: 1.6; /* Slightly increased line height for readability */
       margin: 0;
       padding: 0;
-      font-size: 1rem;
-      transition: background-color 0.3s ease, color 0.3s ease;
+      font-size: 0.95rem; /* Slightly larger base font size */
+      transition: background-color 0.4s ease, color 0.4s ease;
     }
 
     .widget-container {
       max-width: 100%;
       margin: 0 auto;
-      padding: 0.5rem;
+      padding: 0.5rem; /* Increased padding */
       background-color: transparent;
       height: 100vh;
       display: flex;
@@ -68,45 +62,16 @@
     }
 
     .widget-card {
-      background: white;
-      border-radius: 8px;
-      border: 1px solid var(--notion-border);
-      box-shadow: var(--notion-shadow);
+      background: var(--background-card);
+      border-radius: 0.75rem; /* More rounded corners */
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 12px var(--shadow-base); /* Deeper shadow */
       overflow: hidden;
       flex: 1;
       display: flex;
       flex-direction: column;
-      transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    /* Adjust background and border for dark mode */
-    html.dark .widget-card {
-        background: #2f2f2f;
-        border-color: var(--notion-border);
-    }
-
-    .widget-header {
-      padding: 1rem;
-      border-bottom: 1px solid var(--notion-border);
-      text-align: center;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-    }
-
-    .widget-title {
-      font-size: 1rem;
-      font-weight: 600;
-      margin: 0 0 0.25rem 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-    }
-
-    .widget-subtitle {
-      font-size: 0.75rem;
-      opacity: 0.9;
-      margin: 0;
+      transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+      position: relative; /* Added for absolute positioning of floating buttons */
     }
 
     .widget-content {
@@ -116,73 +81,42 @@
       position: relative;
     }
 
-    .generate-section {
-      padding: 1rem;
-      text-align: center;
-      border-bottom: 1px solid var(--notion-border);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .info-display {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: var(--notion-gray-100);
-      border: 1px solid var(--notion-border);
-      border-radius: 6px;
-      padding: 0.5rem 0.75rem;
-      font-size: 0.75rem;
-      color: var(--notion-gray-700);
-      transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-    }
-
-    /* Adjust info-display for dark mode */
-    html.dark .info-display {
-        background: var(--notion-gray-200);
-        border-color: var(--notion-border);
-        color: var(--notion-gray-700);
-    }
-
-    .weather-info-stack {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    .weather-recommendation {
-      font-size: 0.65rem;
-      color: var(--notion-gray-600);
-      margin-top: 0.2rem;
+    /* Floating theme toggle button container */
+    .floating-theme-toggle {
+      position: absolute;
+      bottom: 1rem; /* Distance from bottom */
+      left: 1rem; /* Distance from left */
+      z-index: 100; /* Ensure it is on top */
     }
 
     .generate-button {
-      background: var(--notion-blue);
+      background: var(--primary-color);
       color: white;
       border: none;
-      border-radius: 6px;
-      padding: 0.5rem 1rem;
-      font-size: 0.75rem;
-      font-weight: 500;
+      border-radius: 0.5rem; /* More rounded */
+      padding: 0.5rem 1rem; /* Increased padding */
+      font-size: clamp(0.7rem, 1.6vw, 0.8rem); /* Adaptive font size */
+      font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.3s ease-out; /* Smoother transition */
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
-      margin: 0 auto;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
 
     .generate-button:hover:not(:disabled) {
-      background: #0757c7;
-      transform: translateY(-1px);
+      background: #3A7CDD; /* Slightly darker blue on hover */
+      transform: translateY(-0.15rem); /* More pronounced lift */
+      box-shadow: 0 4px 10px var(--shadow-hover);
     }
 
     .generate-button:disabled {
-      opacity: 0.6;
+      opacity: 0.5;
       cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
     }
 
     .loading-state {
@@ -190,18 +124,19 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 2rem;
-      color: var(--notion-gray-600);
+      padding: 2rem; /* Increased padding */
+      color: var(--text-medium);
       flex: 1;
+      transition: color 0.4s ease;
     }
 
     .spinner {
-      width: 20px;
-      height: 20px;
-      border: 2px solid var(--notion-gray-200);
-      border-top: 2px solid var(--notion-blue);
+      width: 1.5rem; /* Larger spinner */
+      height: 1.5rem;
+      border: 0.15rem solid var(--border-color);
+      border-top: 0.15rem solid var(--primary-color);
       border-radius: 50%;
-      animation: spin 1s linear infinite;
+      animation: spin 0.8s linear infinite; /* Faster spin */
       margin-bottom: 1rem;
     }
 
@@ -214,78 +149,131 @@
       flex: 1;
       position: relative;
       overflow: hidden;
+      padding-bottom: 5rem; /* Sufficient padding for bottom floating button */
+      padding-top: 5rem; /* Adjusted: space for top navigation */
     }
 
     .carousel-track {
       display: flex;
-      transition: transform 0.3s ease;
+      transition: transform 0.4s ease-out; /* Smoother transition */
       height: 100%;
+      touch-action: pan-y; /* Allow vertical scroll, but handle horizontal pan */
+    }
+
+    .carousel-track.no-transition {
+      transition: none; /* Disable transition during swipe */
     }
 
     .carousel-slide {
       min-width: 100%;
-      padding: 1rem 1.25rem; /* Adjusted padding */
+      padding: 1rem 0; /* No horizontal padding on the slide itself, handled by inner-content */
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
       overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--text-light) transparent;
+      opacity: 0; /* For fade-in animation */
+      transform: scale(0.95); /* For subtle scale-in */
+      transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+    }
+
+    /* New inner content wrapper to control max-width and internal padding */
+    .slide-inner-content {
+      max-width: 900px; /* Increased max-width for wider text on large screens */
+      margin: 0 auto; /* Center the content */
+      padding: 0 0.8rem; /* Internal padding for content */
+      box-sizing: border-box; /* Include padding in width */
+      width: 100%; /* Ensure it takes full width up to max-width */
+    }
+
+    .carousel-slide.active-slide {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    /* Webkit scrollbar styles */
+    .carousel-slide::-webkit-scrollbar {
+        width: 0.5rem;
+    }
+
+    .carousel-slide::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .carousel-slide::-webkit-scrollbar-thumb {
+        background-color: var(--text-light);
+        border-radius: 0.25rem;
+        border: 1px solid transparent;
     }
 
     .slide-header {
       text-align: center;
-      margin-bottom: 1rem; /* Adjusted margin */
-      padding-bottom: 0.75rem; /* Adjusted padding */
-      border-bottom: 2px solid var(--notion-border);
-      transition: border-color 0.3s ease;
+      margin-bottom: 1rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1.5px solid var(--border-color); /* Slightly thicker border */
+      transition: border-color 0.4s ease;
     }
 
     .slide-number {
-      font-size: 1rem; /* Slightly reduced font size */
+      font-size: clamp(0.9rem, 2vw, 1rem); /* Adaptive font size */
       font-weight: 600;
-      color: var(--notion-blue);
-      margin: 0 0 0.4rem 0; /* Adjusted margin */
-      transition: color 0.3s ease;
+      color: var(--primary-color);
+      margin: 0 0 0.4rem 0;
+      transition: color 0.4s ease;
     }
 
     .slide-title {
-      font-size: 1.3rem; /* Slightly reduced font size */
+      font-size: clamp(1.2rem, 3vw, 1.5rem); /* Adaptive font size */
       font-weight: 700;
-      color: var(--notion-gray-900);
+      color: var(--text-dark);
       margin: 0;
       line-height: 1.3;
-      transition: color 0.3s ease;
+      transition: color 0.4s ease;
     }
 
     .slide-content {
       flex: 1;
       display: flex;
       flex-direction: column;
+      padding-top: 0.5rem; /* Add some space after header */
     }
 
     .section-title {
-      font-size: 1rem; /* Slightly reduced font size */
+      font-size: clamp(0.9rem, 2vw, 1rem); /* Adaptive font size */
       font-weight: 600;
-      color: var(--notion-gray-900);
-      margin: 0 0 0.8rem 0; /* Adjusted margin */
+      color: var(--text-dark);
+      margin: 0.8rem 0 0.6rem 0; /* Adjusted margins */
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      transition: color 0.3s ease;
+      gap: 0.6rem;
+      transition: color 0.4s ease;
     }
 
     .section-text {
-      font-size: 0.9rem; /* Slightly reduced font size */
-      color: var(--notion-gray-700);
-      line-height: 1.6; /* Slightly reduced line height */
-      margin: 0;
+      font-size: clamp(0.8rem, 1.7vw, 0.95rem); /* Adaptive font size */
+      color: var(--text-medium);
+      line-height: 1.6;
+      margin: 0; /* Removed margin-left, now handled by slide-inner-content padding */
       text-align: justify;
-      transition: color 0.3s ease;
+      transition: color 0.4s ease;
+      /* Quote style */
+      border-left: 0.3rem solid var(--quote-border); /* Thicker border */
+      padding-left: 1rem; /* More space for quote effect */
+      background-color: rgba(var(--primary-color-rgb), 0.05); /* Very subtle background hint */
+      padding-top: 0.4rem;
+      padding-bottom: 0.4rem;
+      border-radius: 0 0.3rem 0.3rem 0; /* Rounded top-right and bottom-right */
+    }
+
+    html.dark .section-text {
+        background-color: rgba(var(--primary-color-rgb), 0.1);
     }
 
     .section-text.italic {
       font-style: italic;
-      color: var(--notion-gray-600);
-      transition: color 0.3s ease;
+      color: var(--text-light);
+      transition: color 0.4s ease;
     }
 
     .section-list {
@@ -296,94 +284,107 @@
 
     .section-list li {
       position: relative;
-      padding-left: 1.4rem; /* Adjusted padding */
-      margin-bottom: 0.6rem; /* Adjusted margin */
-      font-size: 0.9rem; /* Slightly reduced font size */
-      color: var(--notion-gray-700);
-      line-height: 1.5; /* Slightly reduced line height */
+      padding-left: 1.2rem;
+      margin-bottom: 0.6rem; /* More space between list items */
+      font-size: clamp(0.8rem, 1.7vw, 0.95rem); /* Adaptive font size */
+      color: var(--text-medium);
+      line-height: 1.5;
+      margin: 0; /* Removed margin-left, now handled by slide-inner-content padding */
       text-align: justify;
-      transition: color 0.3s ease;
+      transition: color 0.4s ease;
+      /* Quote style */
+      border-left: 0.3rem solid var(--quote-border);
+      padding-left: calc(1.2rem - 0.3rem + 1rem); /* Adjust padding for bullet and new quote style */
+      background-color: rgba(var(--primary-color-rgb), 0.05);
+      padding-top: 0.4rem;
+      padding-bottom: 0.4rem;
+      border-radius: 0 0.3rem 0.3rem 0;
+    }
+    html.dark .section-list li {
+        background-color: rgba(var(--primary-color-rgb), 0.1);
     }
 
     .section-list li::before {
       content: "•";
       position: absolute;
-      left: 0;
-      color: var(--notion-blue);
+      left: 0.6rem; /* Adjust bullet position to align with border */
+      color: var(--primary-color);
       font-weight: bold;
-      font-size: 1.1rem; /* Slightly reduced font size */
-      transition: color 0.3s ease;
+      font-size: clamp(1rem, 2vw, 1.1rem); /* Adaptive font size */
+      transition: color 0.4s ease;
     }
 
     .carousel-nav {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1rem;
-      border-top: 1px solid var(--notion-border);
-      background: var(--notion-gray-50);
-      transition: background 0.3s ease, border-color 0.3s ease;
+      padding: 0.8rem; /* Increased padding */
+      border-bottom: 1px solid var(--border-color); /* Changed from border-top */
+      background: var(--background-light);
+      transition: background 0.4s ease, border-color 0.4s ease;
+      position: absolute; /* Make carousel nav absolute to top */
+      top: 0; /* Changed from bottom */
+      left: 0;
+      right: 0;
+      width: 100%;
+      z-index: 50; /* Ensure it's above content */
     }
 
     .nav-button {
-      background: white;
-      border: 1px solid var(--notion-border);
-      border-radius: 6px;
-      padding: 0.75rem;
+      background: var(--background-card); /* Card background for nav buttons */
+      border: 1px solid var(--border-color);
+      border-radius: 0.5rem; /* More rounded */
+      padding: 0.7rem; /* Increased padding */
       cursor: pointer;
-      transition: all 0.2s ease, background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+      transition: all 0.3s ease-out; /* Smoother transition */
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 44px;
-      height: 44px;
-      color: var(--notion-gray-700);
-      font-size: 1.2rem;
+      width: 2.5rem; /* Larger buttons */
+      height: 2.5rem;
+      font-size: clamp(1rem, 2.2vw, 1.1rem); /* Adaptive font size */
+      color: var(--text-medium);
+      box-shadow: 0 2px 6px var(--shadow-base);
     }
 
     .nav-button:hover:not(:disabled) {
-      background: var(--notion-gray-100);
-      transform: translateY(-1px);
-    }
-    html.dark .nav-button {
-      background: var(--notion-gray-200);
-      border-color: var(--notion-border);
-      color: var(--notion-gray-700);
-    }
-    html.dark .nav-button:hover:not(:disabled) {
-      background: var(--notion-gray-300);
+      background: var(--primary-color);
+      color: white;
+      transform: translateY(-0.15rem);
+      box-shadow: 0 4px 10px var(--shadow-hover);
     }
 
     .nav-button:disabled {
-      opacity: 0.3;
+      opacity: 0.4;
       cursor: not-allowed;
       transform: none;
+      box-shadow: none;
     }
 
     .carousel-indicator {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      font-size: 0.9rem;
-      color: var(--notion-gray-600);
-      transition: color 0.3s ease;
+      gap: 0.8rem; /* Increased gap */
+      font-size: clamp(0.8rem, 1.6vw, 0.9rem); /* Adaptive font size */
+      color: var(--text-medium);
+      transition: color 0.4s ease;
     }
 
     .indicator-dots {
       display: flex;
-      gap: 0.4rem;
+      gap: 0.4rem; /* Increased gap */
     }
 
     .indicator-dot {
-      width: 8px;
-      height: 8px;
+      width: 0.5rem; /* Larger dots */
+      height: 0.5rem;
       border-radius: 50%;
-      background: var(--notion-gray-300);
-      transition: background 0.2s ease;
+      background: var(--border-color); /* Matches border color */
+      transition: background 0.3s ease;
     }
 
     .indicator-dot.active {
-      background: var(--notion-blue);
+      background: var(--primary-color);
     }
 
     .empty-state {
@@ -392,69 +393,62 @@
       align-items: center;
       justify-content: center;
       padding: 2rem;
-      color: var(--notion-gray-500);
+      color: var(--text-light);
       text-align: center;
       flex: 1;
-      transition: color 0.3s ease;
+      transition: color 0.4s ease;
     }
 
     .empty-state-icon {
-      font-size: 3rem;
+      font-size: clamp(2.5rem, 6vw, 3rem); /* Larger icon */
       margin-bottom: 1rem;
     }
 
     .empty-state-text {
-      font-size: 1rem;
+      font-size: clamp(0.9rem, 2vw, 1rem); /* Adaptive font size */
       margin: 0;
     }
 
     /* Styles for the theme toggle button */
     .theme-toggle-button {
-      background: var(--notion-gray-100);
-      border: 1px solid var(--notion-border);
-      border-radius: 6px;
-      padding: 0.5rem;
+      background: var(--background-card);
+      border: 1px solid var(--border-color);
+      border-radius: 0.5rem; /* More rounded */
+      padding: 0.5rem; /* Increased padding */
       cursor: pointer;
-      transition: all 0.2s ease, background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+      transition: all 0.3s ease-out, background 0.4s ease, border-color 0.4s ease, color 0.4s ease;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.75rem;
-      color: var(--notion-gray-700);
-      width: 36px;
-      height: 36px;
+      font-size: clamp(0.7rem, 1.6vw, 0.8rem); /* Adaptive font size */
+      color: var(--text-medium);
+      width: 2.2rem; /* Larger toggle button */
+      height: 2.2rem;
       position: relative;
+      box-shadow: 0 2px 6px var(--shadow-base);
     }
 
     .theme-toggle-button:hover {
-      background: var(--notion-gray-200);
-      transform: translateY(-1px);
-    }
-
-    html.dark .theme-toggle-button {
-      background: var(--notion-gray-200);
-      border-color: var(--notion-border);
-      color: var(--notion-gray-700);
-    }
-
-    html.dark .theme-toggle-button:hover {
-      background: var(--notion-gray-300);
+      background: var(--secondary-color); /* Accent color on hover */
+      color: white;
+      transform: translateY(-0.1rem);
+      box-shadow: 0 4px 10px var(--shadow-hover);
     }
 
     .theme-toggle-tooltip {
         position: absolute;
-        bottom: calc(100% + 5px);
+        bottom: calc(100% + 0.3rem); /* Position above the button */
         left: 50%;
         transform: translateX(-50%);
-        background: var(--notion-gray-800);
+        background: var(--text-dark); /* Darker tooltip background */
         color: white;
-        padding: 0.25rem 0.5rem;
-        border-radius: 4px;
-        font-size: 0.65rem;
+        padding: 0.3rem 0.6rem;
+        border-radius: 0.3rem;
+        font-size: 0.7rem;
         white-space: nowrap;
         opacity: 0;
         visibility: hidden;
-        transition: opacity 0.2s ease, visibility 0.2s ease;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
         pointer-events: none;
         z-index: 10;
     }
@@ -464,52 +458,77 @@
         visibility: visible;
     }
 
-    /* Responsive adjustments */
+    /* Responsive adjustments for smaller screens */
     @media (max-width: 768px) {
       .widget-container {
-        padding: 0.25rem;
+        padding: 0.3rem;
       }
-
       .carousel-slide {
-        padding: 0.8rem 1rem; /* Further adjusted padding for smaller screens */
+        padding: 1rem 0; /* Main padding handled by inner-content */
       }
-
-      .slide-title {
-        font-size: 1.1rem; /* Adjusted for smaller screens */
+      .slide-inner-content {
+        padding: 0 0.6rem; /* Adjusted padding for inner content on smaller screens */
       }
-
-      .section-text {
-        font-size: 0.85rem; /* Adjusted for smaller screens */
+      .floating-theme-toggle {
+        bottom: 0.8rem;
+        left: 0.8rem;
       }
-
-      .section-list li {
-        font-size: 0.85rem; /* Adjusted for smaller screens */
+      .carousel-container {
+        padding-bottom: 4.5rem; /* Adjust padding for smaller screens */
+        padding-top: 4.5rem; /* Adjusted: space for top navigation */
       }
-
-      .generate-section {
-        flex-direction: column;
-        gap: 0.75rem;
+      .generate-button {
+        padding: 0.4rem 0.8rem;
+        font-size: clamp(0.65rem, 1.5vw, 0.75rem);
       }
-
       .theme-toggle-button {
-          width: 32px;
-          height: 32px;
-          padding: 0.4rem;
-          font-size: 0.7rem;
+        width: 2rem;
+        height: 2rem;
+        padding: 0.4rem;
       }
     }
 
     @media (max-width: 480px) {
-      .slide-title {
-        font-size: 1rem; /* Adjusted for smallest screens */
+      .widget-container {
+        padding: 0.2rem;
       }
-
-      .section-text {
-        font-size: 0.8rem; /* Adjusted for smallest screens */
+      .floating-theme-toggle {
+        bottom: 0.6rem;
+        left: 0.6rem;
       }
-
-      .section-list li {
-        font-size: 0.8rem; /* Adjusted for smallest screens */
+      .generate-button {
+        padding: 0.3rem 0.7rem;
+        font-size: clamp(0.6rem, 1.4vw, 0.7rem);
+      }
+      .theme-toggle-button {
+        width: 1.8rem;
+        height: 1.8rem;
+        padding: 0.3rem;
+      }
+      .carousel-container {
+        padding-bottom: 4rem; /* Adjust padding for smallest screens */
+        padding-top: 4rem; /* Adjusted: space for top navigation */
+      }
+      .carousel-slide {
+        padding: 1rem 0; /* Main padding handled by inner-content */
+      }
+      .slide-inner-content {
+        padding: 0 0.4rem; /* Adjusted padding for inner content on smallest screens */
+      }
+      .nav-button {
+        width: 2.2rem;
+        height: 2.2rem;
+        padding: 0.5rem;
+      }
+      .carousel-indicator {
+        gap: 0.6rem;
+      }
+      .indicator-dots {
+        gap: 0.3rem;
+      }
+      .indicator-dot {
+        width: 0.4rem;
+        height: 0.4rem;
       }
     }
   </style>
@@ -518,29 +537,16 @@
   <div class="widget-container">
     <div class="widget-card">
 
-      <div class="widget-content">
-        <div class="generate-section">
-          <div class="info-display">
-            <span>⏰</span>
-            <span id="currentTime"></span>
-          </div>
-          <button id="themeToggleBtn" class="theme-toggle-button" aria-label="Toggle light and dark mode">
-              <span id="themeToggleIcon">☀️</span>
-              <span id="themeToggleTooltip" class="theme-toggle-tooltip">Cambiar a modo oscuro</span>
-          </button>
-          <button onclick="displayLaw()" class="generate-button" id="generate-law-btn">
-            <span>✨</span>
-            <span>Nueva Ley</span>
-          </button>
-          <div class="info-display">
-            <span id="weatherIcon">☀️</span>
-            <div class="weather-info-stack">
-              <span id="weatherText">Cargando clima...</span>
-              <span id="weatherRecommendation" class="weather-recommendation"></span>
-            </div>
-          </div>
+      <div id="carouselNav" class="carousel-nav hidden">
+        <button class="nav-button" id="prevBtn" onclick="previousSlide()">←</button>
+        <div class="carousel-indicator">
+          <span id="slideCounter">1 / 11</span>
+          <div class="indicator-dots" id="indicatorDots"></div>
         </div>
+        <button class="nav-button" id="nextBtn" onclick="nextSlide()">→</button>
+      </div>
 
+      <div class="widget-content">
         <div id="loadingIndicator" class="loading-state hidden">
           <div class="spinner"></div>
           <p style="font-size: 0.9rem; margin: 0;">Generando...</p>
@@ -549,21 +555,23 @@
         <div id="emptyState" class="empty-state">
           <div class="empty-state-icon">🎯</div>
           <p class="empty-state-text">Haz clic para revelar una ley del poder</p>
+          <button onclick="displayLaw()" class="generate-button" id="generate-law-btn" style="margin-top: 1.5rem;">
+            <span>✨</span>
+            <span>Generar Ley</span>
+          </button>
         </div>
 
         <div id="carouselContainer" class="carousel-container hidden">
           <div class="carousel-track" id="carouselTrack">
             </div>
         </div>
+      </div>
 
-        <div id="carouselNav" class="carousel-nav hidden">
-          <button class="nav-button" id="prevBtn" onclick="previousSlide()">←</button>
-          <div class="carousel-indicator">
-            <span id="slideCounter">1 / 11</span>
-            <div class="indicator-dots" id="indicatorDots"></div>
-          </div>
-          <button class="nav-button" id="nextBtn" onclick="nextSlide()">→</button>
-        </div>
+      <div class="floating-theme-toggle">
+          <button id="themeToggleBtn" class="theme-toggle-button" aria-label="Toggle light and dark mode">
+              <span id="themeToggleIcon">☀️</span>
+              <span id="themeToggleTooltip" class="theme-toggle-tooltip">Cambiar a modo oscuro</span>
+          </button>
       </div>
     </div>
   </div>
@@ -574,11 +582,11 @@
     let lawData = null;
     let isDarkMode = false;
 
-    // OpenWeatherMap API Key for weather data in Zapopan, Jalisco
-    const OPENWEATHER_API_KEY = "11764e38b80fc8ed77ee385e08a3d3d5";
-    const CITY = "Zapopan";
-    const COUNTRY_CODE = "MX";
-    const UNITS = "metric";
+    let startX = 0;
+    let startY = 0; // Added for vertical swipe detection
+    let currentX = 0;
+    let isDragging = false;
+    const swipeThreshold = 50; // Minimum pixels to swipe to trigger slide change
 
     const slides = [
       { key: 'fable', title: 'Fábula', icon: '📖' },
@@ -668,6 +676,12 @@
         const slideDiv = document.createElement('div');
         slideDiv.className = 'carousel-slide';
 
+        // Create the inner content wrapper
+        const innerContentDiv = document.createElement('div');
+        innerContentDiv.className = 'slide-inner-content';
+
+        let contentHtml = '';
+
         if (slide.key === 'keys' || slide.key === 'practicalObservance') {
             const items = data[slide.key];
             let listHtml = '';
@@ -676,7 +690,7 @@
                     listHtml += `<li>${item}</li>`;
                 });
             }
-            slideDiv.innerHTML = `
+            contentHtml = `
                 <div class="slide-header">
                     <h2 class="slide-number">Ley #${data.number}</h2>
                     <h3 class="slide-title">${data.name}</h3>
@@ -690,7 +704,7 @@
                 </div>
             `;
         } else if (slide.key === 'imageDescription') {
-            slideDiv.innerHTML = `
+            contentHtml = `
                 <div class="slide-header">
                     <h2 class="slide-number">Ley #${data.number}</h2>
                     <h3 class="slide-title">${data.name}</h3>
@@ -704,7 +718,7 @@
                 </div>
             `;
         } else {
-            slideDiv.innerHTML = `
+            contentHtml = `
                 <div class="slide-header">
                     <h2 class="slide-number">Ley #${data.number}</h2>
                     <h3 class="slide-title">${data.name}</h3>
@@ -718,6 +732,9 @@
                 </div>
             `;
         }
+        
+        innerContentDiv.innerHTML = contentHtml; // Set the innerHTML of the new wrapper
+        slideDiv.appendChild(innerContentDiv); // Append the wrapper to the slide
 
         return slideDiv;
     }
@@ -740,15 +757,22 @@
 
         totalSlides = slides.length;
         currentSlide = 0;
-        updateCarousel();
+        updateCarousel(true); // Call with true to disable transition initially for first render
     }
 
-    function updateCarousel() {
+    function updateCarousel(instant = false) {
         const track = document.getElementById('carouselTrack');
         const counter = document.getElementById('slideCounter');
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
         const dots = document.querySelectorAll('.indicator-dot');
+        const slidesElements = document.querySelectorAll('.carousel-slide');
+
+        if (instant) {
+            track.classList.add('no-transition');
+        } else {
+            track.classList.remove('no-transition');
+        }
 
         track.style.transform = `translateX(-${currentSlide * 100}%)`;
         counter.textContent = `${currentSlide + 1} / ${totalSlides}`;
@@ -756,9 +780,23 @@
         prevBtn.disabled = currentSlide === 0;
         nextBtn.disabled = currentSlide === totalSlides - 1;
 
+        slidesElements.forEach((slideEl, index) => {
+            if (index === currentSlide) {
+                slideEl.classList.add('active-slide');
+            } else {
+                slideEl.classList.remove('active-slide');
+            }
+        });
+
         dots.forEach((dot, index) => {
             dot.classList.toggle('active', index === currentSlide);
         });
+
+        // Force reflow to apply no-transition immediately, then re-enable transition
+        if (instant) {
+            void track.offsetWidth; // Trigger reflow
+            track.classList.remove('no-transition');
+        }
     }
 
     function nextSlide() {
@@ -780,7 +818,7 @@
         const emptyState = document.getElementById('emptyState');
         const carouselContainer = document.getElementById('carouselContainer');
         const carouselNav = document.getElementById('carouselNav');
-        const generateButton = document.getElementById('generate-law-btn');
+        const generateButton = document.getElementById('generate-law-btn'); // Get the standalone button
 
         try {
             loadingIndicator.classList.remove('hidden');
@@ -795,100 +833,24 @@
             createCarousel(law);
 
             carouselContainer.classList.remove('hidden');
-            carouselNav.classList.remove('hidden');
+            carouselNav.classList.remove('hidden'); // This now shows only the prev/next/indicator
 
         } catch (error) {
             console.error("Error:", error);
             emptyState.innerHTML = `
                 <div class="empty-state-icon">❌</div>
                 <p class="empty-state-text">Error al cargar. Inténtalo de nuevo.</p>
+                <button onclick="displayLaw()" class="generate-button" id="generate-law-btn" style="margin-top: 1.5rem;">
+                  <span>✨</span>
+                  <span>Generar Ley</span>
+                </button>
             `;
             emptyState.classList.remove('hidden');
+            // Re-get the button if error state recreates it
+            document.getElementById('generate-law-btn').disabled = false;
         } finally {
             loadingIndicator.classList.add('hidden');
-            generateButton.disabled = false;
-        }
-    }
-
-    // Clock functionality
-    function updateClock() {
-        const now = new Date();
-        const timeString = now.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        document.getElementById('currentTime').textContent = timeString;
-    }
-
-    // Function to get clothing/accessory recommendations
-    function getWeatherRecommendation(temp, description, iconCode) {
-        let recommendations = [];
-
-        if (temp < 10) {
-            recommendations.push("🧥 Abrigo pesado");
-        } else if (temp >= 10 && temp < 18) {
-            recommendations.push("🧣 Suéter o chaqueta");
-        } else if (temp >= 18 && temp < 25) {
-            recommendations.push("👕 Chaqueta ligera");
-        } else {
-            recommendations.push("👚 Ropa ligera");
-        }
-
-        if (iconCode.includes('09') || iconCode.includes('10') || iconCode.includes('11')) {
-            recommendations.push("☔ Lleva paraguas");
-        }
-        if (iconCode.includes('13')) {
-            recommendations.push("🧣 Guantes y bufanda");
-        }
-        if (iconCode.includes('50')) { // Mist
-            recommendations.push("🚗 Conduce con precaución");
-        }
-        if (description.includes("nubes") || description.includes("nublado")) {
-            recommendations.push("☁️ Prepárate para días grises");
-        }
-        if (description.includes("despejado") || description.includes("sol")) {
-            recommendations.push("🕶️ Gafas de sol");
-        }
-
-        return recommendations.join(", ");
-    }
-
-
-    // Weather functionality
-    async function fetchWeather() {
-        const weatherIconElement = document.getElementById('weatherIcon');
-        const weatherTextElement = document.getElementById('weatherText');
-        const weatherRecommendationElement = document.getElementById('weatherRecommendation');
-
-        try {
-            const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${CITY},${COUNTRY_CODE}&appid=${OPENWEATHER_API_KEY}&units=${UNITS}&lang=es`);
-            if (!response.ok) {
-                throw new Error(`Error ${response.status}: ${response.statusText}`);
-            }
-            const data = await response.json();
-
-            const temp = Math.round(data.main.temp);
-            const description = data.weather[0].description;
-            const iconCode = data.weather[0].icon;
-
-            const iconMap = {
-                '01d': '☀️', '01n': '🌙',
-                '02d': '🌤️', '02n': '☁️',
-                '03d': '☁️', '03n': '☁️',
-                '04d': ' overcast', '04n': ' overcast',
-                '09d': '🌧️', '09n': '🌧️',
-                '10d': '🌦️', '10n': '🌧️',
-                '11d': '⛈️', '11n': '⛈️',
-                '13d': '❄️', '13n': '❄️',
-                '50d': '🌫️', '50n': '🌫️'
-            };
-
-            weatherIconElement.textContent = iconMap[iconCode] || '❓';
-            weatherTextElement.textContent = `${temp}°C, ${description}`;
-            weatherRecommendationElement.textContent = getWeatherRecommendation(temp, description, iconCode);
-
-        } catch (error) {
-            console.error("Error fetching weather:", error);
-            weatherIconElement.textContent = '❌';
-            weatherTextElement.textContent = 'No disponible';
-            weatherRecommendationElement.textContent = 'Intenta recargar';
+            generateButton.disabled = false; // Enable the button again after loading finishes
         }
     }
 
@@ -899,10 +861,14 @@
       const themeToggleIcon = document.getElementById('themeToggleIcon');
       const themeToggleTooltip = document.getElementById('themeToggleTooltip');
 
+      // Set RGB values for primary color based on theme for use in rgba backgrounds
+      const root = document.documentElement;
       if (isDarkMode) {
+        root.style.setProperty('--primary-color-rgb', '100, 181, 246'); /* RGB for #64B5F6 */
         themeToggleIcon.textContent = '🌙';
         themeToggleTooltip.textContent = 'Cambiar a modo claro';
       } else {
+        root.style.setProperty('--primary-color-rgb', '74, 144, 226'); /* RGB for #4A90E2 */
         themeToggleIcon.textContent = '☀️';
         themeToggleTooltip.textContent = 'Cambiar a modo oscuro';
       }
@@ -914,24 +880,64 @@
       if (savedTheme === 'dark') {
         isDarkMode = true;
         document.documentElement.classList.add('dark');
+        document.documentElement.style.setProperty('--primary-color-rgb', '100, 181, 246'); /* RGB for #64B5F6 */
         document.getElementById('themeToggleIcon').textContent = '🌙';
         document.getElementById('themeToggleTooltip').textContent = 'Cambiar a modo claro';
       } else {
         isDarkMode = false;
         document.documentElement.classList.remove('dark');
+        document.documentElement.style.setProperty('--primary-color-rgb', '74, 144, 226'); /* RGB for #4A90E2 */
         document.getElementById('themeToggleIcon').textContent = '☀️';
         document.getElementById('themeToggleTooltip').textContent = 'Cambiar a modo oscuro';
       }
     }
 
+    // Carousel swipe functionality
+    const carouselTrack = document.getElementById('carouselTrack');
+
+    carouselTrack.addEventListener('touchstart', (e) => {
+        if (!carouselTrack) return;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY; // Record start Y
+        isDragging = true;
+        carouselTrack.classList.add('no-transition'); // Disable transition for smooth dragging
+    });
+
+    carouselTrack.addEventListener('touchmove', (e) => {
+        if (!isDragging || !carouselTrack) return;
+        currentX = e.touches[0].clientX;
+        const currentY = e.touches[0].clientY; // Get current Y
+        const diffX = startX - currentX;
+        const diffY = startY - currentY; // Calculate Y difference
+        
+        // Prevent default if horizontal swipe is more significant than vertical
+        if (Math.abs(diffX) > Math.abs(diffY)) {
+            e.preventDefault();
+        }
+        
+        const offset = -currentSlide * carouselTrack.offsetWidth + (currentX - startX);
+        carouselTrack.style.transform = `translateX(${offset}px)`;
+    });
+
+    carouselTrack.addEventListener('touchend', () => {
+        if (!isDragging || !carouselTrack) return;
+        isDragging = false;
+        carouselTrack.classList.remove('no-transition'); // Re-enable transition for snapping
+
+        const diffX = startX - currentX;
+
+        if (diffX > swipeThreshold && currentSlide < totalSlides - 1) {
+            nextSlide();
+        } else if (diffX < -swipeThreshold && currentSlide > 0) {
+            previousSlide();
+        } else {
+            updateCarousel(); // Snap back if swipe not enough
+        }
+    });
 
     // Initial calls
     document.addEventListener('DOMContentLoaded', () => {
         loadTheme();
-        updateClock();
-        setInterval(updateClock, 1000); // Update clock every second
-        fetchWeather();
-        setInterval(fetchWeather, 600000); // Update weather every 10 minutes (600,000 ms)
         document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
     });
   </script>
