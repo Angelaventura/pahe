@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Generador de Fábulas Aleatorias con IA</title>
+  <title>Las 48 Leyes del Poder - Generador Aleatorio</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     /* Custom styles for Inter font and general layout */
     body {
@@ -16,71 +17,188 @@
       justify-content: flex-start;
       padding: 1rem;
     }
+    /* Styles for law content sections */
+    .law-section h2 {
+        font-size: 1.5rem; /* Equivalent to text-2xl */
+        font-weight: 600; /* Equivalent to font-semibold */
+        color: #1f2937; /* Dark gray */
+        margin-bottom: 0.75rem; /* Equivalent to mb-3 */
+    }
+    .law-section p, .law-section ul {
+        font-size: 1rem; /* Equivalent to text-base */
+        color: #374151; /* Medium gray */
+        line-height: 1.6;
+    }
+    .law-section ul {
+        list-style-type: disc;
+        margin-left: 1.25rem; /* Equivalent to ml-5 */
+    }
+    .law-section li {
+        margin-bottom: 0.5rem;
+    }
   </style>
 </head>
 <body class="flex flex-col items-center justify-center p-4">
-  <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-2xl">
+  <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-4xl">
     <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">
-      Genera tu fábula aleatoria con IA <span class="text-yellow-500">🦊</span><span class="text-blue-500">📜</span>
+      La Ley del Poder Revelada <span class="text-yellow-500">👑</span><span class="text-blue-500">📜</span>
     </h1>
 
-    <!-- The textarea for user prompt is removed as fables will be random -->
-    <!-- <textarea
-      id="prompt"
-      class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 resize-y mb-4"
-      rows="4"
-      placeholder="Escribe de qué quieres tu fábula, por ejemplo: 'un zorro astuto y un cuervo vanidoso sobre la importancia de la humildad'..."
-    ></textarea> -->
-
     <button
-      onclick="generarFabula()"
-      class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75 shadow-md"
+      onclick="displayLaw()"
+      class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75 shadow-md mb-8"
+      id="generate-law-btn"
     >
-      Generar fábula aleatoria
+      Generar Nueva Ley del Poder
     </button>
 
     <div id="loadingIndicator" class="hidden text-center text-gray-600 mt-4">
-      <div class="animate-spin inline-block w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full"></div>
-      <p class="mt-2">Generando fábula...</p>
+      <div class="animate-spin inline-block w-6 h-6 border-4 border-indigo-500 border-t-transparent rounded-full"></div>
+      <p class="mt-2">Cargando ley y generando descripción de imagen...</p>
     </div>
 
-    <div class="fabula mt-8 p-6 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 leading-relaxed shadow-inner" id="resultado">
-      <!-- Fábula generada aparecerá aquí -->
-      <p class="text-center text-gray-500">Haz clic en el botón para generar una fábula aleatoria.</p>
+    <div class="law-container mt-8 p-6 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 leading-relaxed shadow-inner" id="law-content">
+      <!-- Contenido de la ley generada aparecerá aquí -->
+      <p class="text-center text-gray-500">Haz clic en el botón para generar una ley aleatoria.</p>
+
+      <!-- Título general y nombre de la ley -->
+      <div class="text-center hidden" id="law-header-section">
+          <h2 id="law-number" class="text-2xl md:text-3xl font-bold text-indigo-700 mb-2"></h2>
+          <h3 id="law-name" class="text-xl md:text-2xl font-semibold text-gray-800"></h3>
+      </div>
+
+      <!-- Fábula -->
+      <div class="law-section hidden" id="law-fable-section">
+          <h2 class="text-2xl font-semibold text-gray-800 mb-3">Fábula</h2>
+          <p id="law-fable" class="text-base text-gray-700 leading-relaxed"></p>
+      </div>
+
+      <!-- Historia Ilustrativa -->
+      <div class="law-section hidden" id="law-illustrative-history-section">
+          <h2 class="text-2xl font-semibold text-gray-800 mb-3">Historia Ilustrativa</h2>
+          <p id="law-illustrative-history" class="text-base text-gray-700 leading-relaxed"></p>
+      </div>
+
+      <!-- Lección principal -->
+      <div class="law-section hidden" id="law-lesson-section">
+          <h2 class="text-2xl font-semibold text-gray-800 mb-3">Lección Principal</h2>
+          <p id="law-lesson" class="text-base text-gray-700 leading-relaxed"></p>
+      </div>
+
+      <!-- Ejemplo actual o contemporáneo -->
+      <div class="law-section hidden" id="law-example-section">
+          <h2 class="text-2xl font-semibold text-gray-800 mb-3">Ejemplo Actual o Contemporáneo</h2>
+          <p id="law-example" class="text-base text-gray-700 leading-relaxed"></p>
+      </div>
+
+      <!-- Cuándo no aplicar la ley (invalidación) -->
+      <div class="law-section hidden" id="law-invalidation-section">
+          <h2 class="text-2xl font-semibold text-gray-800 mb-3">Cuándo No Aplicar la Ley (Invalidación)</h2>
+          <p id="law-invalidation" class="text-base text-gray-700 leading-relaxed"></p>
+      </div>
+
+      <!-- Imagen sugerida o símbolo visual (ahora es una descripción generada) -->
+      <div class="law-section text-center hidden" id="law-image-section">
+          <h2 class="text-2xl font-semibold text-gray-800 mb-3">Imagen Sugerida o Símbolo Visual</h2>
+          <p id="law-image-description" class="text-base text-gray-700 italic"></p>
+      </div>
+
+      <!-- Claves para alcanzar el poder -->
+      <div class="law-section hidden" id="law-keys-section">
+          <h2 class="text-2xl font-semibold text-gray-800 mb-3">Claves para Alcanzar el Poder</h2>
+          <ul id="law-keys" class="list-disc list-inside text-base text-gray-700 leading-relaxed"></ul>
+      </div>
+
+      <!-- Interpretación psicológica -->
+      <div class="law-section hidden" id="law-psychological-interpretation-section">
+          <h2 class="text-2xl font-semibold text-gray-800 mb-3">Interpretación Psicológica</h2>
+          <p id="law-psychological-interpretation" class="text-base text-gray-700 leading-relaxed"></p>
+      </div>
+
+      <!-- Observancia práctica (dónde se aplica) -->
+      <div class="law-section hidden" id="law-practical-observance-section">
+          <h2 class="text-2xl font-semibold text-gray-800 mb-3">Observancia Práctica (Dónde se Aplica)</h2>
+          <ul id="law-practical-observance" class="list-disc list-inside text-base text-gray-700 leading-relaxed"></ul>
+      </div>
+
+      <!-- Fundamentos psicológicos -->
+      <div class="law-section hidden" id="law-psychological-foundations-section">
+          <h2 class="text-2xl font-semibold text-gray-800 mb-3">Fundamentos Psicológicos</h2>
+          <p id="law-psychological-foundations" class="text-base text-gray-700 leading-relaxed"></p>
+      </div>
+
+      <!-- Conclusión breve o cierre -->
+      <div class="law-section hidden" id="law-conclusion-section">
+          <h2 class="text-2xl font-semibold text-gray-800 mb-3">Conclusión Breve o Cierre</h2>
+          <p id="law-conclusion" class="text-base text-gray-700 leading-relaxed"></p>
+      </div>
+
     </div>
   </div>
 
   <script>
-    async function generarFabula() {
-      const resultadoDiv = document.getElementById("resultado");
-      const loadingIndicator = document.getElementById("loadingIndicator");
-
-      // Show loading indicator
-      resultadoDiv.innerHTML = ''; // Clear previous result
-      loadingIndicator.classList.remove("hidden");
-
-      try {
+    // Función para obtener una ley aleatoria de las 48 Leyes del Poder usando la API de Gemini
+    async function fetchRandomLaw() {
         let chatHistory = [];
-        // Request a random fable in Spanish, including title and moral
-        chatHistory.push({
-          role: "user",
-          parts: [{
-            text: "Escribe una fábula original y aleatoria en español. Incluye un título y una moraleja clara al final, todo en un solo bloque de texto."
-          }]
-        });
+        const prompt = `Genera una ley aleatoria de "Las 48 Leyes del Poder" con todos los siguientes campos en formato JSON, en español. Asegúrate de que el 'number' sea un número entero entre 1 y 48. Los campos son:
+        - number (número de la ley)
+        - name (nombre de la ley)
+        - fable (fábula)
+        - illustrativeHistory (historia ilustrativa)
+        - lesson (lección principal)
+        - example (ejemplo actual o contemporáneo)
+        - invalidation (cuándo no aplicar la ley)
+        - imageDescription (descripción sugerida para una imagen o símbolo visual)
+        - keys (claves para alcanzar el poder, una lista de strings)
+        - psychologicalInterpretation (interpretación psicológica)
+        - practicalObservance (observancia práctica, dónde se aplica, una lista de strings)
+        - psychologicalFoundations (fundamentos psicológicos)
+        - conclusion (conclusión breve o cierre)
+
+        Ejemplo de estructura para 'keys' y 'practicalObservance':
+        "keys": ["Punto 1", "Punto 2"],
+        "practicalObservance": ["Aplicación 1", "Aplicación 2"]
+        `;
+
+        chatHistory.push({ role: "user", parts: [{ text: prompt }] });
 
         const payload = {
-          contents: chatHistory
-          // No generationConfig for structured response, as we want plain text
+            contents: chatHistory,
+            generationConfig: {
+                responseMimeType: "application/json",
+                responseSchema: {
+                    type: "OBJECT",
+                    properties: {
+                        "number": { "type": "NUMBER" },
+                        "name": { "type": "STRING" },
+                        "fable": { "type": "STRING" },
+                        "illustrativeHistory": { "type": "STRING" }, // Nuevo campo
+                        "lesson": { "type": "STRING" },
+                        "example": { "type": "STRING" },
+                        "invalidation": { "type": "STRING" },
+                        "imageDescription": { "type": "STRING" },
+                        "keys": { "type": "ARRAY", "items": { "type": "STRING" } },
+                        "psychologicalInterpretation": { "type": "STRING" },
+                        "practicalObservance": { "type": "ARRAY", "items": { "type": "STRING" } },
+                        "psychologicalFoundations": { "type": "STRING" },
+                        "conclusion": { "type": "STRING" }
+                    },
+                    "required": [
+                        "number", "name", "fable", "illustrativeHistory", "lesson", "example", "invalidation",
+                        "imageDescription", "keys", "psychologicalInterpretation",
+                        "practicalObservance", "psychologicalFoundations", "conclusion"
+                    ]
+                }
+            }
         };
 
         const apiKey = "AIzaSyCOIkKdI9IvOdQq5ReRK6YW00lMXkc37Xc"; // The API key is automatically provided by the Canvas environment
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
         const response = await fetch(apiUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
         });
 
         const result = await response.json();
@@ -88,20 +206,134 @@
         if (result.candidates && result.candidates.length > 0 &&
             result.candidates[0].content && result.candidates[0].content.parts &&
             result.candidates[0].content.parts.length > 0) {
-          const fableText = result.candidates[0].content.parts[0].text;
-          resultadoDiv.innerHTML = `<p class="whitespace-pre-wrap">${fableText}</p>`;
+            const jsonText = result.candidates[0].content.parts[0].text;
+            // Parse the JSON string received from the API
+            const parsedLaw = JSON.parse(jsonText);
+            return parsedLaw;
         } else {
-          resultadoDiv.innerHTML = '<p class="text-red-500 text-center">No se pudo generar la fábula. Inténtalo de nuevo.</p>';
-          console.error("Unexpected API response structure:", result);
+            console.error("Unexpected API response structure for law generation:", result);
+            throw new Error("No se pudo generar la ley. Inténtalo de nuevo.");
         }
-      } catch (error) {
-        console.error("Error al generar la fábula:", error);
-        resultadoDiv.innerHTML = '<p class="text-red-500 text-center">Ocurrió un error al generar la fábula. Por favor, inténtalo de nuevo.</p>';
-      } finally {
-        // Hide loading indicator
-        loadingIndicator.classList.add("hidden");
-      }
     }
+
+    // Función para generar la descripción de la imagen usando la API de Gemini
+    async function generateImageDescription(lawName, lawLesson) {
+        try {
+            let chatHistory = [];
+            const prompt = `Genera una descripción detallada para una imagen que represente visualmente la siguiente ley del poder: "${lawName}". La lección principal de la ley es: "${lawLesson}". La descripción debe ser evocadora y sugerir un símbolo visual o una escena, como si fuera para un artista que va a crear la imagen. Debe ser concisa y directa, en español.`;
+            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+
+            const payload = { contents: chatHistory };
+            const apiKey = ""; // The API key is automatically provided by the Canvas environment
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
+
+            if (result.candidates && result.candidates.length > 0 &&
+                result.candidates[0].content && result.candidates[0].content.parts &&
+                result.candidates[0].content.parts.length > 0) {
+                return result.candidates[0].content.parts[0].text;
+            } else {
+                console.error("Unexpected API response structure for image description:", result);
+                return "No se pudo generar una descripción de imagen.";
+            }
+        } catch (error) {
+            console.error("Error al generar la descripción de la imagen con Gemini:", error);
+            return "Error al generar la descripción de la imagen.";
+        }
+    }
+
+    // Función para mostrar la ley en la página
+    async function displayLaw() {
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const lawContentDiv = document.getElementById('law-content');
+        const generateButton = document.getElementById('generate-law-btn');
+
+        try {
+            // Mostrar indicador de carga y ocultar contenido de la ley
+            loadingIndicator.classList.remove('hidden');
+            lawContentDiv.querySelector('p.text-center.text-gray-500').classList.add('hidden');
+            lawContentDiv.querySelectorAll('.law-section, #law-header-section').forEach(el => el.classList.add('hidden'));
+            generateButton.disabled = true;
+
+            const law = await fetchRandomLaw(); // Ahora esta función llama a Gemini para generar la ley
+
+            // Actualizar el contenido de la página con los datos de la ley
+            document.getElementById('law-number').textContent = `Ley #${law.number}:`;
+            document.getElementById('law-name').textContent = law.name;
+            document.getElementById('law-fable').textContent = law.fable;
+            document.getElementById('law-illustrative-history').textContent = law.illustrativeHistory; // Nuevo campo
+            document.getElementById('law-lesson').textContent = law.lesson;
+            document.getElementById('law-example').textContent = law.example;
+            document.getElementById('law-invalidation').textContent = law.invalidation;
+
+            // Generar y mostrar la descripción de la imagen usando Gemini
+            // Se usa la descripción generada por la API de la ley, o se genera una nueva si es necesario
+            const imageDescriptionToUse = law.imageDescription || await generateImageDescription(law.name, law.lesson);
+            document.getElementById('law-image-description').textContent = imageDescriptionToUse;
+
+            const lawKeysList = document.getElementById('law-keys');
+            lawKeysList.innerHTML = ''; // Limpiar lista anterior
+            if (law.keys && Array.isArray(law.keys)) {
+                law.keys.forEach(key => {
+                    const li = document.createElement('li');
+                    li.textContent = key;
+                    lawKeysList.appendChild(li);
+                });
+            } else {
+                lawKeysList.innerHTML = '<li>No se encontraron claves.</li>';
+            }
+
+
+            document.getElementById('law-psychological-interpretation').textContent = law.psychologicalInterpretation;
+
+            const lawPracticalObservanceList = document.getElementById('law-practical-observance');
+            lawPracticalObservanceList.innerHTML = ''; // Limpiar lista anterior
+            if (law.practicalObservance && Array.isArray(law.practicalObservance)) {
+                law.practicalObservance.forEach(point => {
+                    const li = document.createElement('li');
+                    li.textContent = point;
+                    lawPracticalObservanceList.appendChild(li);
+                });
+            } else {
+                lawPracticalObservanceList.innerHTML = '<li>No se encontraron puntos de observancia práctica.</li>';
+            }
+
+            document.getElementById('law-psychological-foundations').textContent = law.psychologicalFoundations;
+            document.getElementById('law-conclusion').textContent = law.conclusion;
+
+            // Mostrar todas las secciones de la ley
+            document.getElementById('law-header-section').classList.remove('hidden');
+            document.getElementById('law-fable-section').classList.remove('hidden');
+            document.getElementById('law-illustrative-history-section').classList.remove('hidden'); // Mostrar nueva sección
+            document.getElementById('law-lesson-section').classList.remove('hidden');
+            document.getElementById('law-example-section').classList.remove('hidden');
+            document.getElementById('law-invalidation-section').classList.remove('hidden');
+            document.getElementById('law-image-section').classList.remove('hidden');
+            document.getElementById('law-keys-section').classList.remove('hidden');
+            document.getElementById('law-psychological-interpretation-section').classList.remove('hidden');
+            document.getElementById('law-practical-observance-section').classList.remove('hidden');
+            document.getElementById('law-psychological-foundations-section').classList.remove('hidden');
+            document.getElementById('law-conclusion-section').classList.remove('hidden');
+
+        } catch (error) {
+            console.error("Error al obtener o procesar la ley:", error);
+            lawContentDiv.innerHTML = '<p class="text-red-500 text-center">Ocurrió un error al cargar la ley. Por favor, inténtelo de nuevo.</p>';
+        } finally {
+            // Ocultar indicador de carga
+            loadingIndicator.classList.add('hidden');
+            generateButton.disabled = false; // Habilitar botón
+        }
+    }
+
+    // Mostrar una ley al cargar la página por primera vez
+    window.onload = displayLaw;
   </script>
 </body>
 </html>
