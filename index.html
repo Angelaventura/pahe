@@ -54,7 +54,7 @@
       margin: 0;
       padding: 0;
       font-size: 1rem;
-      transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition for theme change */
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     .widget-container {
@@ -62,6 +62,9 @@
       margin: 0 auto;
       padding: 0.5rem;
       background-color: transparent;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
     .widget-card {
@@ -70,10 +73,10 @@
       border: 1px solid var(--notion-border);
       box-shadow: var(--notion-shadow);
       overflow: hidden;
-      min-height: 400px;
+      flex: 1;
       display: flex;
       flex-direction: column;
-      transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+      transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
     /* Adjust background and border for dark mode */
@@ -134,7 +137,7 @@
       padding: 0.5rem 0.75rem;
       font-size: 0.75rem;
       color: var(--notion-gray-700);
-      transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+      transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
     }
 
     /* Adjust info-display for dark mode */
@@ -221,67 +224,68 @@
 
     .carousel-slide {
       min-width: 100%;
-      padding: 1rem;
+      padding: 1rem 1.25rem; /* Adjusted padding */
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
+      overflow-y: auto;
     }
 
     .slide-header {
       text-align: center;
-      margin-bottom: 1rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 1px solid var(--notion-border);
-      transition: border-color 0.3s ease; /* Smooth transition */
+      margin-bottom: 1rem; /* Adjusted margin */
+      padding-bottom: 0.75rem; /* Adjusted padding */
+      border-bottom: 2px solid var(--notion-border);
+      transition: border-color 0.3s ease;
     }
 
     .slide-number {
-      font-size: 0.875rem;
+      font-size: 1rem; /* Slightly reduced font size */
       font-weight: 600;
       color: var(--notion-blue);
-      margin: 0 0 0.25rem 0;
-      transition: color 0.3s ease; /* Smooth transition */
+      margin: 0 0 0.4rem 0; /* Adjusted margin */
+      transition: color 0.3s ease;
     }
 
     .slide-title {
-      font-size: 1rem;
+      font-size: 1.3rem; /* Slightly reduced font size */
       font-weight: 700;
       color: var(--notion-gray-900);
       margin: 0;
       line-height: 1.3;
-      transition: color 0.3s ease; /* Smooth transition */
+      transition: color 0.3s ease;
     }
 
     .slide-content {
       flex: 1;
       display: flex;
       flex-direction: column;
-      justify-content: center;
     }
 
     .section-title {
-      font-size: 0.875rem;
+      font-size: 1rem; /* Slightly reduced font size */
       font-weight: 600;
       color: var(--notion-gray-900);
-      margin: 0 0 0.5rem 0;
+      margin: 0 0 0.8rem 0; /* Adjusted margin */
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      transition: color 0.3s ease; /* Smooth transition */
+      gap: 0.75rem;
+      transition: color 0.3s ease;
     }
 
     .section-text {
-      font-size: 0.75rem;
+      font-size: 0.9rem; /* Slightly reduced font size */
       color: var(--notion-gray-700);
-      line-height: 1.5;
+      line-height: 1.6; /* Slightly reduced line height */
       margin: 0;
-      transition: color 0.3s ease; /* Smooth transition */
+      text-align: justify;
+      transition: color 0.3s ease;
     }
 
     .section-text.italic {
       font-style: italic;
       color: var(--notion-gray-600);
-      transition: color 0.3s ease; /* Smooth transition */
+      transition: color 0.3s ease;
     }
 
     .section-list {
@@ -292,12 +296,13 @@
 
     .section-list li {
       position: relative;
-      padding-left: 1rem;
-      margin-bottom: 0.25rem;
-      font-size: 0.75rem;
+      padding-left: 1.4rem; /* Adjusted padding */
+      margin-bottom: 0.6rem; /* Adjusted margin */
+      font-size: 0.9rem; /* Slightly reduced font size */
       color: var(--notion-gray-700);
-      line-height: 1.4;
-      transition: color 0.3s ease; /* Smooth transition */
+      line-height: 1.5; /* Slightly reduced line height */
+      text-align: justify;
+      transition: color 0.3s ease;
     }
 
     .section-list li::before {
@@ -306,32 +311,34 @@
       left: 0;
       color: var(--notion-blue);
       font-weight: bold;
-      transition: color 0.3s ease; /* Smooth transition */
+      font-size: 1.1rem; /* Slightly reduced font size */
+      transition: color 0.3s ease;
     }
 
     .carousel-nav {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.75rem 1rem;
+      padding: 1rem;
       border-top: 1px solid var(--notion-border);
       background: var(--notion-gray-50);
-      transition: background 0.3s ease, border-color 0.3s ease; /* Smooth transition */
+      transition: background 0.3s ease, border-color 0.3s ease;
     }
 
     .nav-button {
       background: white;
       border: 1px solid var(--notion-border);
       border-radius: 6px;
-      padding: 0.5rem;
+      padding: 0.75rem;
       cursor: pointer;
-      transition: all 0.2s ease, background 0.3s ease, border-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+      transition: all 0.2s ease, background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 36px;
-      height: 36px;
+      width: 44px;
+      height: 44px;
       color: var(--notion-gray-700);
+      font-size: 1.2rem;
     }
 
     .nav-button:hover:not(:disabled) {
@@ -347,7 +354,6 @@
       background: var(--notion-gray-300);
     }
 
-
     .nav-button:disabled {
       opacity: 0.3;
       cursor: not-allowed;
@@ -357,20 +363,20 @@
     .carousel-indicator {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      font-size: 0.75rem;
+      gap: 0.75rem;
+      font-size: 0.9rem;
       color: var(--notion-gray-600);
-      transition: color 0.3s ease; /* Smooth transition */
+      transition: color 0.3s ease;
     }
 
     .indicator-dots {
       display: flex;
-      gap: 0.25rem;
+      gap: 0.4rem;
     }
 
     .indicator-dot {
-      width: 6px;
-      height: 6px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       background: var(--notion-gray-300);
       transition: background 0.2s ease;
@@ -389,16 +395,16 @@
       color: var(--notion-gray-500);
       text-align: center;
       flex: 1;
-      transition: color 0.3s ease; /* Smooth transition */
+      transition: color 0.3s ease;
     }
 
     .empty-state-icon {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
+      font-size: 3rem;
+      margin-bottom: 1rem;
     }
 
     .empty-state-text {
-      font-size: 0.75rem;
+      font-size: 1rem;
       margin: 0;
     }
 
@@ -413,11 +419,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.75rem; /* Make it smaller */
+      font-size: 0.75rem;
       color: var(--notion-gray-700);
-      width: 36px; /* Ensure it's a small, square button */
+      width: 36px;
       height: 36px;
-      position: relative; /* For tooltip positioning */
+      position: relative;
     }
 
     .theme-toggle-button:hover {
@@ -434,9 +440,10 @@
     html.dark .theme-toggle-button:hover {
       background: var(--notion-gray-300);
     }
+
     .theme-toggle-tooltip {
         position: absolute;
-        bottom: calc(100% + 5px); /* Position above the button */
+        bottom: calc(100% + 5px);
         left: 50%;
         transform: translateX(-50%);
         background: var(--notion-gray-800);
@@ -448,7 +455,7 @@
         opacity: 0;
         visibility: hidden;
         transition: opacity 0.2s ease, visibility 0.2s ease;
-        pointer-events: none; /* Allows clicks to pass through to the button */
+        pointer-events: none;
         z-index: 10;
     }
 
@@ -457,135 +464,52 @@
         visibility: visible;
     }
 
-    /* Styles for Pomodoro Button and Dropdown */
-    .pomodoro-container {
-        position: relative;
-        display: inline-block;
-    }
-
-    .pomodoro-button {
-      background: #f0f0f0; /* Light grey, can be customized */
-      border: 1px solid var(--notion-border);
-      border-radius: 6px;
-      padding: 0.5rem 1rem;
-      font-size: 0.75rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s ease, background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      color: var(--notion-gray-700);
-      position: relative; /* Needed for dropdown positioning */
-      z-index: 20; /* Above dropdown */
-    }
-    .pomodoro-button:hover:not(:disabled) {
-      background: var(--notion-gray-200);
-      transform: translateY(-1px);
-    }
-    .pomodoro-button.active {
-      background: var(--notion-blue);
-      color: white;
-      border-color: var(--notion-blue);
-    }
-    .pomodoro-button.active:hover {
-        background: #0757c7;
-    }
-    html.dark .pomodoro-button {
-        background: var(--notion-gray-200);
-        border-color: var(--notion-border);
-        color: var(--notion-gray-700);
-    }
-    html.dark .pomodoro-button:hover:not(:disabled) {
-        background: var(--notion-gray-300);
-    }
-    html.dark .pomodoro-button.active {
-        background: var(--notion-blue);
-        border-color: var(--notion-blue);
-        color: white;
-    }
-
-    .pomodoro-dropdown {
-        position: absolute;
-        top: 100%; /* Position below the button */
-        left: 0;
-        margin-top: 5px;
-        background: white;
-        border: 1px solid var(--notion-border);
-        border-radius: 6px;
-        box-shadow: var(--notion-shadow);
-        z-index: 10;
-        min-width: 120px; /* Adjust as needed */
-        overflow: hidden;
-        transition: opacity 0.2s ease, transform 0.2s ease;
-        transform-origin: top;
-        opacity: 0;
-        transform: translateY(-5px);
-        pointer-events: none; /* Don't block clicks when hidden */
-    }
-
-    .pomodoro-dropdown.show {
-        opacity: 1;
-        transform: translateY(0);
-        pointer-events: all;
-    }
-
-    html.dark .pomodoro-dropdown {
-        background: #383838;
-        border-color: var(--notion-border);
-    }
-
-    .pomodoro-dropdown-item {
-        padding: 0.75rem 1rem;
-        cursor: pointer;
-        font-size: 0.8rem;
-        color: var(--notion-gray-700);
-        transition: background-color 0.15s ease, color 0.15s ease;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .pomodoro-dropdown-item:hover {
-        background-color: var(--notion-gray-100);
-        color: var(--notion-gray-900);
-    }
-    html.dark .pomodoro-dropdown-item:hover {
-        background-color: var(--notion-gray-400);
-        color: var(--notion-gray-900);
-    }
-
     /* Responsive adjustments */
-    @media (max-width: 480px) {
+    @media (max-width: 768px) {
       .widget-container {
         padding: 0.25rem;
       }
-      
+
       .carousel-slide {
-        padding: 0.75rem;
+        padding: 0.8rem 1rem; /* Further adjusted padding for smaller screens */
       }
-      
+
       .slide-title {
-        font-size: 0.875rem;
+        font-size: 1.1rem; /* Adjusted for smaller screens */
       }
-      
+
       .section-text {
-        font-size: 0.7rem;
+        font-size: 0.85rem; /* Adjusted for smaller screens */
+      }
+
+      .section-list li {
+        font-size: 0.85rem; /* Adjusted for smaller screens */
       }
 
       .generate-section {
         flex-direction: column;
         gap: 0.75rem;
       }
+
       .theme-toggle-button {
           width: 32px;
           height: 32px;
           padding: 0.4rem;
           font-size: 0.7rem;
       }
-      .pomodoro-button {
-          padding: 0.5rem 0.75rem;
+    }
+
+    @media (max-width: 480px) {
+      .slide-title {
+        font-size: 1rem; /* Adjusted for smallest screens */
+      }
+
+      .section-text {
+        font-size: 0.8rem; /* Adjusted for smallest screens */
+      }
+
+      .section-list li {
+        font-size: 0.8rem; /* Adjusted for smallest screens */
       }
     }
   </style>
@@ -604,31 +528,6 @@
               <span id="themeToggleIcon">☀️</span>
               <span id="themeToggleTooltip" class="theme-toggle-tooltip">Cambiar a modo oscuro</span>
           </button>
-          <div class="pomodoro-container">
-            <button id="pomodoroBtn" class="pomodoro-button">
-              <span id="pomodoroIcon">▶️</span>
-              <span id="pomodoroDisplay">25:00</span>
-            </button>
-            <div id="pomodoroDropdown" class="pomodoro-dropdown">
-                <div class="pomodoro-dropdown-item" data-minutes="5">
-                    <span>⏱️</span>
-                    <span>5 Minutos</span>
-                </div>
-                <div class="pomodoro-dropdown-item" data-minutes="15">
-                    <span>⏱️</span>
-                    <span>15 Minutos</span>
-                </div>
-                <div class="pomodoro-dropdown-item" data-minutes="30">
-                    <span>⏱️</span>
-                    <span>30 Minutos</span>
-                </div>
-                <hr style="border-color: var(--notion-border); margin: 0 0.5rem;">
-                <div class="pomodoro-dropdown-item" id="pomodoroResetItem">
-                    <span>🔄</span>
-                    <span>Reiniciar</span>
-                </div>
-            </div>
-          </div>
           <button onclick="displayLaw()" class="generate-button" id="generate-law-btn">
             <span>✨</span>
             <span>Nueva Ley</span>
@@ -644,7 +543,7 @@
 
         <div id="loadingIndicator" class="loading-state hidden">
           <div class="spinner"></div>
-          <p style="font-size: 0.75rem; margin: 0;">Generando...</p>
+          <p style="font-size: 0.9rem; margin: 0;">Generando...</p>
         </div>
 
         <div id="emptyState" class="empty-state">
@@ -673,16 +572,16 @@
     let currentSlide = 0;
     let totalSlides = 0;
     let lawData = null;
-    let isDarkMode = false; // Track current theme state
+    let isDarkMode = false;
 
     // OpenWeatherMap API Key for weather data in Zapopan, Jalisco
-    const OPENWEATHER_API_KEY = "11764e38b80fc8ed77ee385e08a3d3d5"; 
+    const OPENWEATHER_API_KEY = "11764e38b80fc8ed77ee385e08a3d3d5";
     const CITY = "Zapopan";
     const COUNTRY_CODE = "MX";
-    const UNITS = "metric"; // Use 'metric' for Celsius, 'imperial' for Fahrenheit
+    const UNITS = "metric";
 
     const slides = [
-      { key: 'fable', title: 'Fábula', icon: '📖' }, // Now starts with Fable
+      { key: 'fable', title: 'Fábula', icon: '📖' },
       { key: 'illustrativeHistory', title: 'Historia Ilustrativa', icon: '🏛️' },
       { key: 'lesson', title: 'Lección Principal', icon: '💡' },
       { key: 'example', title: 'Ejemplo Contemporáneo', icon: '🌟' },
@@ -826,7 +725,7 @@
     function createCarousel(data) {
         const track = document.getElementById('carouselTrack');
         const dotsContainer = document.getElementById('indicatorDots');
-        
+
         track.innerHTML = '';
         dotsContainer.innerHTML = '';
 
@@ -936,286 +835,105 @@
             recommendations.push("☔ Lleva paraguas");
         }
         if (iconCode.includes('13')) {
-            recommendations.push("🧤 Gorro y guantes");
+            recommendations.push("🧣 Guantes y bufanda");
         }
-        if ((iconCode.includes('01') || iconCode.includes('02')) && temp > 20) {
+        if (iconCode.includes('50')) { // Mist
+            recommendations.push("🚗 Conduce con precaución");
+        }
+        if (description.includes("nubes") || description.includes("nublado")) {
+            recommendations.push("☁️ Prepárate para días grises");
+        }
+        if (description.includes("despejado") || description.includes("sol")) {
             recommendations.push("🕶️ Gafas de sol");
         }
-        if (iconCode.includes('01') && temp > 25) {
-            recommendations.push("🧢 Gorra y 🧴 protector solar");
-        }
-        if (iconCode.includes('50')) {
-            recommendations.push("🚗 Ten precaución al conducir");
-        }
 
-        return recommendations.join(" y ") + ".";
+        return recommendations.join(", ");
     }
+
 
     // Weather functionality
     async function fetchWeather() {
-        const weatherIcon = document.getElementById('weatherIcon');
-        const weatherText = document.getElementById('weatherText');
-        const weatherRecommendation = document.getElementById('weatherRecommendation');
-
-        if (!OPENWEATHER_API_KEY || OPENWEATHER_API_KEY === "TU_CLAVE_API_DE_OPENWEATHERMAP") {
-            weatherText.textContent = "Clave API de clima no configurada.";
-            weatherRecommendation.textContent = "";
-            weatherIcon.textContent = "⚠️";
-            return;
-        }
+        const weatherIconElement = document.getElementById('weatherIcon');
+        const weatherTextElement = document.getElementById('weatherText');
+        const weatherRecommendationElement = document.getElementById('weatherRecommendation');
 
         try {
             const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${CITY},${COUNTRY_CODE}&appid=${OPENWEATHER_API_KEY}&units=${UNITS}&lang=es`);
+            if (!response.ok) {
+                throw new Error(`Error ${response.status}: ${response.statusText}`);
+            }
             const data = await response.json();
 
-            if (data.cod === 200) {
-                const temp = Math.round(data.main.temp);
-                const description = data.weather[0].description;
-                const iconCode = data.weather[0].icon;
-                
-                let emojiIcon = '❓';
-                if (iconCode.includes('01')) emojiIcon = '☀️';
-                else if (iconCode.includes('02')) emojiIcon = '🌤️';
-                else if (iconCode.includes('03') || iconCode.includes('04')) emojiIcon = '☁️';
-                else if (iconCode.includes('09') || iconCode.includes('10')) emojiIcon = '🌧️';
-                else if (iconCode.includes('11')) emojiIcon = '⛈️';
-                else if (iconCode.includes('13')) emojiIcon = '❄️';
-                else if (iconCode.includes('50')) emojiIcon = '🌫️';
+            const temp = Math.round(data.main.temp);
+            const description = data.weather[0].description;
+            const iconCode = data.weather[0].icon;
 
-                weatherIcon.textContent = emojiIcon;
-                weatherText.textContent = `${temp}°C, ${description}.`;
-                weatherRecommendation.textContent = getWeatherRecommendation(temp, description, iconCode);
+            const iconMap = {
+                '01d': '☀️', '01n': '🌙',
+                '02d': '🌤️', '02n': '☁️',
+                '03d': '☁️', '03n': '☁️',
+                '04d': ' overcast', '04n': ' overcast',
+                '09d': '🌧️', '09n': '🌧️',
+                '10d': '🌦️', '10n': '🌧️',
+                '11d': '⛈️', '11n': '⛈️',
+                '13d': '❄️', '13n': '❄️',
+                '50d': '🌫️', '50n': '🌫️'
+            };
 
-            } else {
-                weatherIcon.textContent = "❌";
-                weatherText.textContent = `Error: ${data.message}`;
-                weatherRecommendation.textContent = "";
-            }
+            weatherIconElement.textContent = iconMap[iconCode] || '❓';
+            weatherTextElement.textContent = `${temp}°C, ${description}`;
+            weatherRecommendationElement.textContent = getWeatherRecommendation(temp, description, iconCode);
+
         } catch (error) {
-            console.error("Error al obtener el clima:", error);
-            weatherIcon.textContent = "❗";
-            weatherText.textContent = "Error al obtener el clima.";
-            weatherRecommendation.textContent = "";
+            console.error("Error fetching weather:", error);
+            weatherIconElement.textContent = '❌';
+            weatherTextElement.textContent = 'No disponible';
+            weatherRecommendationElement.textContent = 'Intenta recargar';
         }
     }
 
-    // --- Theme Toggle Logic ---
-    const themeToggleBtn = document.getElementById('themeToggleBtn');
-    const themeToggleIcon = document.getElementById('themeToggleIcon');
-    const themeToggleTooltip = document.getElementById('themeToggleTooltip');
-    const htmlElement = document.documentElement; // The <html> tag
-
-    function applyTheme(theme) {
-        if (theme === 'dark') {
-            htmlElement.classList.add('dark');
-            isDarkMode = true;
-            themeToggleIcon.textContent = '🌙';
-            themeToggleTooltip.textContent = 'Cambiar a modo claro';
-            localStorage.setItem('theme', 'dark');
-        } else {
-            htmlElement.classList.remove('dark');
-            isDarkMode = false;
-            themeToggleIcon.textContent = '☀️';
-            themeToggleTooltip.textContent = 'Cambiar a modo oscuro';
-            localStorage.setItem('theme', 'light');
-        }
-    }
-
+    // Theme Toggle functionality
     function toggleTheme() {
-        if (isDarkMode) {
-            applyTheme('light');
-        } else {
-            applyTheme('dark');
-        }
+      isDarkMode = !isDarkMode;
+      document.documentElement.classList.toggle('dark', isDarkMode);
+      const themeToggleIcon = document.getElementById('themeToggleIcon');
+      const themeToggleTooltip = document.getElementById('themeToggleTooltip');
+
+      if (isDarkMode) {
+        themeToggleIcon.textContent = '🌙';
+        themeToggleTooltip.textContent = 'Cambiar a modo claro';
+      } else {
+        themeToggleIcon.textContent = '☀️';
+        themeToggleTooltip.textContent = 'Cambiar a modo oscuro';
+      }
+      localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
     }
 
-    // Event listener for the theme toggle button
-    themeToggleBtn.addEventListener('click', toggleTheme);
-
-    // Initialize theme on load
-    function initializeTheme() {
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            applyTheme(savedTheme);
-        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            // Apply dark mode if system preference is dark and no theme is saved
-            applyTheme('dark');
-        } else {
-            // Default to light mode if no saved theme and system preference is not dark
-            applyTheme('light');
-        }
-    }
-    // --- End Theme Toggle Logic ---
-
-    // --- Pomodoro Timer Logic ---
-    const pomodoroBtn = document.getElementById('pomodoroBtn');
-    const pomodoroIcon = document.getElementById('pomodoroIcon');
-    const pomodoroDisplay = document.getElementById('pomodoroDisplay');
-    const pomodoroDropdown = document.getElementById('pomodoroDropdown');
-    const pomodoroDropdownItems = document.querySelectorAll('.pomodoro-dropdown-item[data-minutes]');
-    const pomodoroResetItem = document.getElementById('pomodoroResetItem');
-
-    // Default work time, but now it can be set by user
-    let DEFAULT_WORK_MINUTES = 25; 
-    const SHORT_BREAK_MINUTES = 5;
-
-    let pomodoroTimer = {
-        interval: null,
-        minutes: DEFAULT_WORK_MINUTES,
-        seconds: 0,
-        isRunning: false,
-        sessionType: 'work', // 'work' or 'break'
-        workCycles: 0,
-        currentWorkDuration: DEFAULT_WORK_MINUTES // Stores the last selected work duration
-    };
-
-    function updatePomodoroDisplay() {
-        const min = String(pomodoroTimer.minutes).padStart(2, '0');
-        const sec = String(pomodoroTimer.seconds).padStart(2, '0');
-        pomodoroDisplay.textContent = `${min}:${sec}`;
+    function loadTheme() {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark') {
+        isDarkMode = true;
+        document.documentElement.classList.add('dark');
+        document.getElementById('themeToggleIcon').textContent = '🌙';
+        document.getElementById('themeToggleTooltip').textContent = 'Cambiar a modo claro';
+      } else {
+        isDarkMode = false;
+        document.documentElement.classList.remove('dark');
+        document.getElementById('themeToggleIcon').textContent = '☀️';
+        document.getElementById('themeToggleTooltip').textContent = 'Cambiar a modo oscuro';
+      }
     }
 
-    function startPomodoro(durationMinutes = pomodoroTimer.currentWorkDuration) {
-        if (pomodoroTimer.isRunning && pomodoroTimer.sessionType === 'work') return; // Prevent starting new work timer if one is running
 
-        // If starting a new work session, set its duration
-        if (pomodoroTimer.sessionType === 'work' && !pomodoroTimer.isRunning) {
-            pomodoroTimer.currentWorkDuration = durationMinutes; // Save the selected duration
-            pomodoroTimer.minutes = durationMinutes;
-            pomodoroTimer.seconds = 0;
-        }
-
-        pomodoroTimer.isRunning = true;
-        pomodoroBtn.classList.add('active');
-        pomodoroIcon.textContent = '⏸️'; // Pause icon
-
-        // Hide dropdown if it's open
-        pomodoroDropdown.classList.remove('show');
-
-
-        // Request notification permission if not granted
-        if (Notification.permission !== 'granted') {
-            Notification.requestPermission();
-        }
-
-        pomodoroTimer.interval = setInterval(() => {
-            if (pomodoroTimer.seconds > 0) {
-                pomodoroTimer.seconds--;
-            } else if (pomodoroTimer.minutes > 0) {
-                pomodoroTimer.minutes--;
-                pomodoroTimer.seconds = 59;
-            } else {
-                // Timer finished
-                clearInterval(pomodoroTimer.interval);
-                pomodoroTimer.isRunning = false;
-                handlePomodoroEnd();
-            }
-            updatePomodoroDisplay();
-        }, 1000);
-    }
-
-    function pausePomodoro() {
-        clearInterval(pomodoroTimer.interval);
-        pomodoroTimer.isRunning = false;
-        pomodoroBtn.classList.remove('active');
-        pomodoroIcon.textContent = '▶️'; // Play icon
-    }
-
-    function resetPomodoro() {
-        pausePomodoro();
-        pomodoroTimer.sessionType = 'work';
-        pomodoroTimer.minutes = pomodoroTimer.currentWorkDuration; // Reset to the last chosen duration
-        pomodoroTimer.seconds = 0;
-        pomodoroIcon.textContent = '▶️'; // Play icon
-        updatePomodoroDisplay();
-        pomodoroDropdown.classList.remove('show'); // Hide dropdown on reset
-    }
-
-    function handlePomodoroEnd() {
-        if (pomodoroTimer.sessionType === 'work') {
-            // Work session ended
-            pomodoroTimer.workCycles++;
-            new Notification('¡Pomodoro Terminado!', {
-                body: 'Es hora de un descanso. Tómate 5 minutos.',
-                icon: 'https://img.icons8.com/color/48/000000/tomato.png' // A tomato icon for notification
-            });
-            pomodoroTimer.sessionType = 'break';
-            pomodoroTimer.minutes = SHORT_BREAK_MINUTES;
-            pomodoroTimer.seconds = 0;
-            pomodoroIcon.textContent = '✅'; // Checkmark to indicate completion
-            pomodoroBtn.classList.remove('active'); // Remove active state after ending
-        } else {
-            // Break session ended
-            new Notification('¡Descanso Terminado!', {
-                body: 'Es hora de volver al trabajo. Empieza un nuevo Pomodoro.',
-                icon: 'https://img.icons8.com/color/48/000000/tomato.png'
-            });
-            pomodoroTimer.sessionType = 'work';
-            pomodoroTimer.minutes = pomodoroTimer.currentWorkDuration; // Reset to the last chosen work duration
-            pomodoroTimer.seconds = 0;
-            pomodoroIcon.textContent = '▶️'; // Play icon
-            pomodoroBtn.classList.remove('active'); // Remove active state after ending
-        }
-        updatePomodoroDisplay();
-    }
-
-    // Toggle Pomodoro state or show dropdown on button click
-    pomodoroBtn.addEventListener('click', (event) => {
-        event.stopPropagation(); // Prevent click from bubbling to document and closing dropdown immediately
-
-        if (pomodoroTimer.isRunning) {
-            // If timer is running, pause it
-            pausePomodoro();
-        } else {
-            // If timer is not running, toggle dropdown visibility
-            pomodoroDropdown.classList.toggle('show');
-        }
-    });
-
-    // Handle dropdown item clicks
-    pomodoroDropdownItems.forEach(item => {
-        item.addEventListener('click', (event) => {
-            const minutes = parseInt(event.currentTarget.dataset.minutes);
-            // Only start if not already running or if it's a new work session
-            if (!pomodoroTimer.isRunning || pomodoroTimer.sessionType === 'break' || pomodoroTimer.currentWorkDuration !== minutes) {
-                pomodoroTimer.sessionType = 'work'; // Ensure it's a work session
-                startPomodoro(minutes);
-            }
-        });
-    });
-
-    // Handle reset item click
-    pomodoroResetItem.addEventListener('click', resetPomodoro);
-
-
-    // Close dropdown if clicked outside
-    document.addEventListener('click', (event) => {
-        if (!pomodoroDropdown.contains(event.target) && event.target !== pomodoroBtn) {
-            pomodoroDropdown.classList.remove('show');
-        }
-    });
-
-    // --- End Pomodoro Timer Logic ---
-
-
-    // Keyboard navigation
-    document.addEventListener('keydown', (e) => {
-        if (lawData) {
-            if (e.key === 'ArrowRight') nextSlide();
-            if (e.key === 'ArrowLeft') previousSlide();
-        }
-    });
-
-    // Load initial data and set up intervals
-    window.onload = () => {
-        initializeTheme(); // Initialize theme first
-        displayLaw();
+    // Initial calls
+    document.addEventListener('DOMContentLoaded', () => {
+        loadTheme();
         updateClock();
-        setInterval(updateClock, 1000);
+        setInterval(updateClock, 1000); // Update clock every second
         fetchWeather();
-        setInterval(fetchWeather, 3600000);
-        updatePomodoroDisplay(); // Initialize pomodoro display
-    };
+        setInterval(fetchWeather, 600000); // Update weather every 10 minutes (600,000 ms)
+        document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
+    });
   </script>
 </body>
 </html>
