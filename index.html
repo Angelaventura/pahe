@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generador de Fábulas Aleatorias con IA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Custom styles for Inter font and general layout */
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f0f2f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 1rem;
+    }
+  </style>
+</head>
+<body class="flex flex-col items-center justify-center p-4">
+  <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-2xl">
+    <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">
+      Genera tu fábula aleatoria con IA <span class="text-yellow-500">🦊</span><span class="text-blue-500">📜</span>
+    </h1>
+
+    <!-- The textarea for user prompt is removed as fables will be random -->
+    <!-- <textarea
+      id="prompt"
+      class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 resize-y mb-4"
+      rows="4"
+      placeholder="Escribe de qué quieres tu fábula, por ejemplo: 'un zorro astuto y un cuervo vanidoso sobre la importancia de la humildad'..."
+    ></textarea> -->
+
+    <button
+      onclick="generarFabula()"
+      class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75 shadow-md"
+    >
+      Generar fábula aleatoria
+    </button>
+
+    <div id="loadingIndicator" class="hidden text-center text-gray-600 mt-4">
+      <div class="animate-spin inline-block w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+      <p class="mt-2">Generando fábula...</p>
+    </div>
+
+    <div class="fabula mt-8 p-6 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 leading-relaxed shadow-inner" id="resultado">
+      <!-- Fábula generada aparecerá aquí -->
+      <p class="text-center text-gray-500">Haz clic en el botón para generar una fábula aleatoria.</p>
+    </div>
+  </div>
+
+  <script>
+    async function generarFabula() {
+      const resultadoDiv = document.getElementById("resultado");
+      const loadingIndicator = document.getElementById("loadingIndicator");
+
+      // Show loading indicator
+      resultadoDiv.innerHTML = ''; // Clear previous result
+      loadingIndicator.classList.remove("hidden");
+
+      try {
+        let chatHistory = [];
+        // Request a random fable in Spanish, including title and moral
+        chatHistory.push({
+          role: "user",
+          parts: [{
+            text: "Escribe una fábula original y aleatoria en español. Incluye un título y una moraleja clara al final, todo en un solo bloque de texto."
+          }]
+        });
+
+        const payload = {
+          contents: chatHistory
+          // No generationConfig for structured response, as we want plain text
+        };
+
+        const apiKey = "AIzaSyCOIkKdI9IvOdQq5ReRK6YW00lMXkc37Xc"; // The API key is automatically provided by the Canvas environment
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        if (result.candidates && result.candidates.length > 0 &&
+            result.candidates[0].content && result.candidates[0].content.parts &&
+            result.candidates[0].content.parts.length > 0) {
+          const fableText = result.candidates[0].content.parts[0].text;
+          resultadoDiv.innerHTML = `<p class="whitespace-pre-wrap">${fableText}</p>`;
+        } else {
+          resultadoDiv.innerHTML = '<p class="text-red-500 text-center">No se pudo generar la fábula. Inténtalo de nuevo.</p>';
+          console.error("Unexpected API response structure:", result);
+        }
+      } catch (error) {
+        console.error("Error al generar la fábula:", error);
+        resultadoDiv.innerHTML = '<p class="text-red-500 text-center">Ocurrió un error al generar la fábula. Por favor, inténtalo de nuevo.</p>';
+      } finally {
+        // Hide loading indicator
+        loadingIndicator.classList.add("hidden");
+      }
+    }
+  </script>
+</body>
+</html>
