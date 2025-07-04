@@ -3,141 +3,439 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Las 48 Leyes del Poder - Generador Aleatorio</title>
+  <title>Las 48 Leyes del Poder - Widget</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    /* Custom styles for Inter font and general layout */
+    /* Notion-style custom properties */
+    :root {
+      --notion-gray-50: #f7f7f5;
+      --notion-gray-100: #ebebea;
+      --notion-gray-200: #e0e0de;
+      --notion-gray-300: #d1d0ce;
+      --notion-gray-400: #b8b7b5;
+      --notion-gray-500: #a5a4a2;
+      --notion-gray-600: #888782;
+      --notion-gray-700: #6e6d6a;
+      --notion-gray-800: #565653;
+      --notion-gray-900: #3f3f3c;
+      --notion-blue: #0969da;
+      --notion-blue-light: #dbeafe;
+      --notion-border: #e9e9e7;
+      --notion-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      --notion-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: 'Inter', sans-serif;
-      background-color: #f0f2f5;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--notion-gray-50);
+      color: var(--notion-gray-900);
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+
+    .widget-container {
+      max-width: 100%;
+      margin: 0 auto;
+      padding: 0.5rem;
+      background-color: transparent;
+    }
+
+    .widget-card {
+      background: white;
+      border-radius: 8px;
+      border: 1px solid var(--notion-border);
+      box-shadow: var(--notion-shadow);
+      overflow: hidden;
+      min-height: 400px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .widget-header {
+      padding: 1rem;
+      border-bottom: 1px solid var(--notion-border);
+      text-align: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .widget-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 0 0 0.25rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .widget-subtitle {
+      font-size: 0.75rem;
+      opacity: 0.9;
+      margin: 0;
+    }
+
+    .widget-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .generate-section {
+      padding: 1rem;
+      text-align: center;
+      border-bottom: 1px solid var(--notion-border);
+    }
+
+    .generate-button {
+      background: var(--notion-blue);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 0.5rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin: 0 auto;
+    }
+
+    .generate-button:hover:not(:disabled) {
+      background: #0757c7;
+      transform: translateY(-1px);
+    }
+
+    .generate-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .loading-state {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: center;
+      padding: 2rem;
+      color: var(--notion-gray-600);
+      flex: 1;
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--notion-gray-200);
+      border-top: 2px solid var(--notion-blue);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 1rem;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .carousel-container {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .carousel-track {
+      display: flex;
+      transition: transform 0.3s ease;
+      height: 100%;
+    }
+
+    .carousel-slide {
+      min-width: 100%;
       padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
-    /* Styles for law content sections */
-    .law-section h2 {
-        font-size: 1.5rem; /* Equivalent to text-2xl */
-        font-weight: 600; /* Equivalent to font-semibold */
-        color: #1f2937; /* Dark gray */
-        margin-bottom: 0.75rem; /* Equivalent to mb-3 */
+
+    .slide-header {
+      text-align: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--notion-border);
     }
-    .law-section p, .law-section ul {
-        font-size: 1rem; /* Equivalent to text-base */
-        color: #374151; /* Medium gray */
-        line-height: 1.6;
+
+    .slide-number {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--notion-blue);
+      margin: 0 0 0.25rem 0;
     }
-    .law-section ul {
-        list-style-type: disc;
-        margin-left: 1.25rem; /* Equivalent to ml-5 */
+
+    .slide-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--notion-gray-900);
+      margin: 0;
+      line-height: 1.3;
     }
-    .law-section li {
-        margin-bottom: 0.5rem;
+
+    .slide-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .section-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--notion-gray-900);
+      margin: 0 0 0.5rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-text {
+      font-size: 0.75rem;
+      color: var(--notion-gray-700);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .section-text.italic {
+      font-style: italic;
+      color: var(--notion-gray-600);
+    }
+
+    .section-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .section-list li {
+      position: relative;
+      padding-left: 1rem;
+      margin-bottom: 0.25rem;
+      font-size: 0.75rem;
+      color: var(--notion-gray-700);
+      line-height: 1.4;
+    }
+
+    .section-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--notion-blue);
+      font-weight: bold;
+    }
+
+    .carousel-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      border-top: 1px solid var(--notion-border);
+      background: var(--notion-gray-50);
+    }
+
+    .nav-button {
+      background: white;
+      border: 1px solid var(--notion-border);
+      border-radius: 6px;
+      padding: 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      color: var(--notion-gray-700);
+    }
+
+    .nav-button:hover:not(:disabled) {
+      background: var(--notion-gray-100);
+      transform: translateY(-1px);
+    }
+
+    .nav-button:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .carousel-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      color: var(--notion-gray-600);
+    }
+
+    .indicator-dots {
+      display: flex;
+      gap: 0.25rem;
+    }
+
+    .indicator-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--notion-gray-300);
+      transition: background 0.2s ease;
+    }
+
+    .indicator-dot.active {
+      background: var(--notion-blue);
+    }
+
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      color: var(--notion-gray-500);
+      text-align: center;
+      flex: 1;
+    }
+
+    .empty-state-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .empty-state-text {
+      font-size: 0.75rem;
+      margin: 0;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 480px) {
+      .widget-container {
+        padding: 0.25rem;
+      }
+      
+      .carousel-slide {
+        padding: 0.75rem;
+      }
+      
+      .slide-title {
+        font-size: 0.875rem;
+      }
+      
+      .section-text {
+        font-size: 0.7rem;
+      }
+    }
+
+    /* Dark mode support */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --notion-gray-50: #2f2f2f;
+        --notion-gray-100: #383838;
+        --notion-gray-200: #404040;
+        --notion-gray-300: #4a4a4a;
+        --notion-gray-400: #666666;
+        --notion-gray-500: #7a7a7a;
+        --notion-gray-600: #9b9b9b;
+        --notion-gray-700: #b8b8b8;
+        --notion-gray-800: #d1d1d1;
+        --notion-gray-900: #e6e6e6;
+        --notion-blue: #5b9bd5;
+        --notion-border: #404040;
+        --notion-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+      }
+
+      body {
+        background-color: var(--notion-gray-50);
+      }
+
+      .widget-card {
+        background: #2f2f2f;
+        border-color: var(--notion-border);
+      }
     }
   </style>
 </head>
-<body class="flex flex-col items-center justify-center p-4">
-  <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-4xl">
-    <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">
-      La Ley del Poder Revelada <span class="text-yellow-500">👑</span><span class="text-blue-500">📜</span>
-    </h1>
-
-    <button
-      onclick="displayLaw()"
-      class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75 shadow-md mb-8"
-      id="generate-law-btn"
-    >
-      Generar Nueva Ley del Poder
-    </button>
-
-    <div id="loadingIndicator" class="hidden text-center text-gray-600 mt-4">
-      <div class="animate-spin inline-block w-6 h-6 border-4 border-indigo-500 border-t-transparent rounded-full"></div>
-      <p class="mt-2">Cargando ley y generando descripción de imagen...</p>
-    </div>
-
-    <div class="law-container mt-8 p-6 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 leading-relaxed shadow-inner" id="law-content">
-      <!-- Contenido de la ley generada aparecerá aquí -->
-      <p class="text-center text-gray-500">Haz clic en el botón para generar una ley aleatoria.</p>
-
-      <!-- Título general y nombre de la ley -->
-      <div class="text-center hidden" id="law-header-section">
-          <h2 id="law-number" class="text-2xl md:text-3xl font-bold text-indigo-700 mb-2"></h2>
-          <h3 id="law-name" class="text-xl md:text-2xl font-semibold text-gray-800"></h3>
+<body>
+  <div class="widget-container">
+    <div class="widget-card">
+      <div class="widget-header">
+        <h1 class="widget-title">
+          <span>Las 48 Leyes del Poder</span>
+          <span>👑</span>
+        </h1>
+        <p class="widget-subtitle">Generador de sabiduría estratégica</p>
       </div>
 
-      <!-- Fábula -->
-      <div class="law-section hidden" id="law-fable-section">
-          <h2 class="text-2xl font-semibold text-gray-800 mb-3">Fábula</h2>
-          <p id="law-fable" class="text-base text-gray-700 leading-relaxed"></p>
-      </div>
+      <div class="widget-content">
+        <div class="generate-section">
+          <button onclick="displayLaw()" class="generate-button" id="generate-law-btn">
+            <span>✨</span>
+            <span>Nueva Ley</span>
+          </button>
+        </div>
 
-      <!-- Historia Ilustrativa -->
-      <div class="law-section hidden" id="law-illustrative-history-section">
-          <h2 class="text-2xl font-semibold text-gray-800 mb-3">Historia Ilustrativa</h2>
-          <p id="law-illustrative-history" class="text-base text-gray-700 leading-relaxed"></p>
-      </div>
+        <div id="loadingIndicator" class="loading-state hidden">
+          <div class="spinner"></div>
+          <p style="font-size: 0.75rem; margin: 0;">Generando...</p>
+        </div>
 
-      <!-- Lección principal -->
-      <div class="law-section hidden" id="law-lesson-section">
-          <h2 class="text-2xl font-semibold text-gray-800 mb-3">Lección Principal</h2>
-          <p id="law-lesson" class="text-base text-gray-700 leading-relaxed"></p>
-      </div>
+        <div id="emptyState" class="empty-state">
+          <div class="empty-state-icon">🎯</div>
+          <p class="empty-state-text">Haz clic para revelar una ley del poder</p>
+        </div>
 
-      <!-- Ejemplo actual o contemporáneo -->
-      <div class="law-section hidden" id="law-example-section">
-          <h2 class="text-2xl font-semibold text-gray-800 mb-3">Ejemplo Actual o Contemporáneo</h2>
-          <p id="law-example" class="text-base text-gray-700 leading-relaxed"></p>
-      </div>
+        <div id="carouselContainer" class="carousel-container hidden">
+          <div class="carousel-track" id="carouselTrack">
+            <!-- Slides will be populated by JavaScript -->
+          </div>
+        </div>
 
-      <!-- Cuándo no aplicar la ley (invalidación) -->
-      <div class="law-section hidden" id="law-invalidation-section">
-          <h2 class="text-2xl font-semibold text-gray-800 mb-3">Cuándo No Aplicar la Ley (Invalidación)</h2>
-          <p id="law-invalidation" class="text-base text-gray-700 leading-relaxed"></p>
+        <div id="carouselNav" class="carousel-nav hidden">
+          <button class="nav-button" id="prevBtn" onclick="previousSlide()">←</button>
+          <div class="carousel-indicator">
+            <span id="slideCounter">1 / 11</span>
+            <div class="indicator-dots" id="indicatorDots"></div>
+          </div>
+          <button class="nav-button" id="nextBtn" onclick="nextSlide()">→</button>
+        </div>
       </div>
-
-      <!-- Imagen sugerida o símbolo visual (ahora es una descripción generada) -->
-      <div class="law-section text-center hidden" id="law-image-section">
-          <h2 class="text-2xl font-semibold text-gray-800 mb-3">Imagen Sugerida o Símbolo Visual</h2>
-          <p id="law-image-description" class="text-base text-gray-700 italic"></p>
-      </div>
-
-      <!-- Claves para alcanzar el poder -->
-      <div class="law-section hidden" id="law-keys-section">
-          <h2 class="text-2xl font-semibold text-gray-800 mb-3">Claves para Alcanzar el Poder</h2>
-          <ul id="law-keys" class="list-disc list-inside text-base text-gray-700 leading-relaxed"></ul>
-      </div>
-
-      <!-- Interpretación psicológica -->
-      <div class="law-section hidden" id="law-psychological-interpretation-section">
-          <h2 class="text-2xl font-semibold text-gray-800 mb-3">Interpretación Psicológica</h2>
-          <p id="law-psychological-interpretation" class="text-base text-gray-700 leading-relaxed"></p>
-      </div>
-
-      <!-- Observancia práctica (dónde se aplica) -->
-      <div class="law-section hidden" id="law-practical-observance-section">
-          <h2 class="text-2xl font-semibold text-gray-800 mb-3">Observancia Práctica (Dónde se Aplica)</h2>
-          <ul id="law-practical-observance" class="list-disc list-inside text-base text-gray-700 leading-relaxed"></ul>
-      </div>
-
-      <!-- Fundamentos psicológicos -->
-      <div class="law-section hidden" id="law-psychological-foundations-section">
-          <h2 class="text-2xl font-semibold text-gray-800 mb-3">Fundamentos Psicológicos</h2>
-          <p id="law-psychological-foundations" class="text-base text-gray-700 leading-relaxed"></p>
-      </div>
-
-      <!-- Conclusión breve o cierre -->
-      <div class="law-section hidden" id="law-conclusion-section">
-          <h2 class="text-2xl font-semibold text-gray-800 mb-3">Conclusión Breve o Cierre</h2>
-          <p id="law-conclusion" class="text-base text-gray-700 leading-relaxed"></p>
-      </div>
-
     </div>
   </div>
 
   <script>
-    // Función para obtener una ley aleatoria de las 48 Leyes del Poder usando la API de Gemini
+    let currentSlide = 0;
+    let totalSlides = 0;
+    let lawData = null;
+
+    const slides = [
+      { key: 'header', title: 'Información General', icon: '📋' },
+      { key: 'fable', title: 'Fábula', icon: '📖' },
+      { key: 'illustrativeHistory', title: 'Historia Ilustrativa', icon: '🏛️' },
+      { key: 'lesson', title: 'Lección Principal', icon: '💡' },
+      { key: 'example', title: 'Ejemplo Contemporáneo', icon: '🌟' },
+      { key: 'invalidation', title: 'Cuándo No Aplicar', icon: '⚠️' },
+      { key: 'imageDescription', title: 'Símbolo Visual', icon: '🎨' },
+      { key: 'keys', title: 'Claves del Poder', icon: '🔑' },
+      { key: 'psychologicalInterpretation', title: 'Interpretación Psicológica', icon: '🧠' },
+      { key: 'practicalObservance', title: 'Aplicación Práctica', icon: '🎯' },
+      { key: 'psychologicalFoundations', title: 'Fundamentos Psicológicos', icon: '🔬' },
+      { key: 'conclusion', title: 'Conclusión', icon: '💭' }
+    ];
+
     async function fetchRandomLaw() {
         let chatHistory = [];
         const prompt = `Genera una ley aleatoria de "Las 48 Leyes del Poder" con todos los siguientes campos en formato JSON, en español. Asegúrate de que el 'number' sea un número entero entre 1 y 48. Los campos son:
@@ -153,12 +451,7 @@
         - psychologicalInterpretation (interpretación psicológica)
         - practicalObservance (observancia práctica, dónde se aplica, una lista de strings)
         - psychologicalFoundations (fundamentos psicológicos)
-        - conclusion (conclusión breve o cierre)
-
-        Ejemplo de estructura para 'keys' y 'practicalObservance':
-        "keys": ["Punto 1", "Punto 2"],
-        "practicalObservance": ["Aplicación 1", "Aplicación 2"]
-        `;
+        - conclusion (conclusión breve o cierre)`;
 
         chatHistory.push({ role: "user", parts: [{ text: prompt }] });
 
@@ -172,7 +465,7 @@
                         "number": { "type": "NUMBER" },
                         "name": { "type": "STRING" },
                         "fable": { "type": "STRING" },
-                        "illustrativeHistory": { "type": "STRING" }, // Nuevo campo
+                        "illustrativeHistory": { "type": "STRING" },
                         "lesson": { "type": "STRING" },
                         "example": { "type": "STRING" },
                         "invalidation": { "type": "STRING" },
@@ -192,7 +485,7 @@
             }
         };
 
-        const apiKey = "AIzaSyCOIkKdI9IvOdQq5ReRK6YW00lMXkc37Xc"; // The API key is automatically provided by the Canvas environment
+        const apiKey = "AIzaSyCOIkKdI9IvOdQq5ReRK6YW00lMXkc37Xc";
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
         const response = await fetch(apiUrl, {
@@ -207,132 +500,181 @@
             result.candidates[0].content && result.candidates[0].content.parts &&
             result.candidates[0].content.parts.length > 0) {
             const jsonText = result.candidates[0].content.parts[0].text;
-            // Parse the JSON string received from the API
-            const parsedLaw = JSON.parse(jsonText);
-            return parsedLaw;
+            return JSON.parse(jsonText);
         } else {
-            console.error("Unexpected API response structure for law generation:", result);
-            throw new Error("No se pudo generar la ley. Inténtalo de nuevo.");
+            throw new Error("No se pudo generar la ley.");
         }
     }
 
-    // Función para generar la descripción de la imagen usando la API de Gemini
-    async function generateImageDescription(lawName, lawLesson) {
-        try {
-            let chatHistory = [];
-            const prompt = `Genera una descripción detallada para una imagen que represente visualmente la siguiente ley del poder: "${lawName}". La lección principal de la ley es: "${lawLesson}". La descripción debe ser evocadora y sugerir un símbolo visual o una escena, como si fuera para un artista que va a crear la imagen. Debe ser concisa y directa, en español.`;
-            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+    function createSlideContent(slide, data) {
+        const slideDiv = document.createElement('div');
+        slideDiv.className = 'carousel-slide';
 
-            const payload = { contents: chatHistory };
-            const apiKey = ""; // The API key is automatically provided by the Canvas environment
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            const result = await response.json();
-
-            if (result.candidates && result.candidates.length > 0 &&
-                result.candidates[0].content && result.candidates[0].content.parts &&
-                result.candidates[0].content.parts.length > 0) {
-                return result.candidates[0].content.parts[0].text;
-            } else {
-                console.error("Unexpected API response structure for image description:", result);
-                return "No se pudo generar una descripción de imagen.";
+        if (slide.key === 'header') {
+            slideDiv.innerHTML = `
+                <div class="slide-header">
+                    <h2 class="slide-number">Ley #${data.number}</h2>
+                    <h3 class="slide-title">${data.name}</h3>
+                </div>
+                <div class="slide-content">
+                    <div class="section-title">
+                        <span>${slide.icon}</span>
+                        <span>Esta es una de las 48 leyes fundamentales del poder</span>
+                    </div>
+                    <p class="section-text">Navega con las flechas para explorar todos los aspectos de esta ley.</p>
+                </div>
+            `;
+        } else if (slide.key === 'keys' || slide.key === 'practicalObservance') {
+            const items = data[slide.key];
+            let listHtml = '';
+            if (items && Array.isArray(items)) {
+                items.forEach(item => {
+                    listHtml += `<li>${item}</li>`;
+                });
             }
-        } catch (error) {
-            console.error("Error al generar la descripción de la imagen con Gemini:", error);
-            return "Error al generar la descripción de la imagen.";
+            slideDiv.innerHTML = `
+                <div class="slide-header">
+                    <h2 class="slide-number">Ley #${data.number}</h2>
+                    <h3 class="slide-title">${data.name}</h3>
+                </div>
+                <div class="slide-content">
+                    <div class="section-title">
+                        <span>${slide.icon}</span>
+                        <span>${slide.title}</span>
+                    </div>
+                    <ul class="section-list">${listHtml}</ul>
+                </div>
+            `;
+        } else if (slide.key === 'imageDescription') {
+            slideDiv.innerHTML = `
+                <div class="slide-header">
+                    <h2 class="slide-number">Ley #${data.number}</h2>
+                    <h3 class="slide-title">${data.name}</h3>
+                </div>
+                <div class="slide-content">
+                    <div class="section-title">
+                        <span>${slide.icon}</span>
+                        <span>${slide.title}</span>
+                    </div>
+                    <p class="section-text italic">${data[slide.key]}</p>
+                </div>
+            `;
+        } else {
+            slideDiv.innerHTML = `
+                <div class="slide-header">
+                    <h2 class="slide-number">Ley #${data.number}</h2>
+                    <h3 class="slide-title">${data.name}</h3>
+                </div>
+                <div class="slide-content">
+                    <div class="section-title">
+                        <span>${slide.icon}</span>
+                        <span>${slide.title}</span>
+                    </div>
+                    <p class="section-text">${data[slide.key]}</p>
+                </div>
+            `;
+        }
+
+        return slideDiv;
+    }
+
+    function createCarousel(data) {
+        const track = document.getElementById('carouselTrack');
+        const dotsContainer = document.getElementById('indicatorDots');
+        
+        track.innerHTML = '';
+        dotsContainer.innerHTML = '';
+
+        slides.forEach((slide, index) => {
+            const slideElement = createSlideContent(slide, data);
+            track.appendChild(slideElement);
+
+            const dot = document.createElement('div');
+            dot.className = `indicator-dot ${index === 0 ? 'active' : ''}`;
+            dotsContainer.appendChild(dot);
+        });
+
+        totalSlides = slides.length;
+        currentSlide = 0;
+        updateCarousel();
+    }
+
+    function updateCarousel() {
+        const track = document.getElementById('carouselTrack');
+        const counter = document.getElementById('slideCounter');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const dots = document.querySelectorAll('.indicator-dot');
+
+        track.style.transform = `translateX(-${currentSlide * 100}%)`;
+        counter.textContent = `${currentSlide + 1} / ${totalSlides}`;
+
+        prevBtn.disabled = currentSlide === 0;
+        nextBtn.disabled = currentSlide === totalSlides - 1;
+
+        dots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === currentSlide);
+        });
+    }
+
+    function nextSlide() {
+        if (currentSlide < totalSlides - 1) {
+            currentSlide++;
+            updateCarousel();
         }
     }
 
-    // Función para mostrar la ley en la página
+    function previousSlide() {
+        if (currentSlide > 0) {
+            currentSlide--;
+            updateCarousel();
+        }
+    }
+
     async function displayLaw() {
         const loadingIndicator = document.getElementById('loadingIndicator');
-        const lawContentDiv = document.getElementById('law-content');
+        const emptyState = document.getElementById('emptyState');
+        const carouselContainer = document.getElementById('carouselContainer');
+        const carouselNav = document.getElementById('carouselNav');
         const generateButton = document.getElementById('generate-law-btn');
 
         try {
-            // Mostrar indicador de carga y ocultar contenido de la ley
             loadingIndicator.classList.remove('hidden');
-            lawContentDiv.querySelector('p.text-center.text-gray-500').classList.add('hidden');
-            lawContentDiv.querySelectorAll('.law-section, #law-header-section').forEach(el => el.classList.add('hidden'));
+            emptyState.classList.add('hidden');
+            carouselContainer.classList.add('hidden');
+            carouselNav.classList.add('hidden');
             generateButton.disabled = true;
 
-            const law = await fetchRandomLaw(); // Ahora esta función llama a Gemini para generar la ley
+            const law = await fetchRandomLaw();
+            lawData = law;
 
-            // Actualizar el contenido de la página con los datos de la ley
-            document.getElementById('law-number').textContent = `Ley #${law.number}:`;
-            document.getElementById('law-name').textContent = law.name;
-            document.getElementById('law-fable').textContent = law.fable;
-            document.getElementById('law-illustrative-history').textContent = law.illustrativeHistory; // Nuevo campo
-            document.getElementById('law-lesson').textContent = law.lesson;
-            document.getElementById('law-example').textContent = law.example;
-            document.getElementById('law-invalidation').textContent = law.invalidation;
+            createCarousel(law);
 
-            // Generar y mostrar la descripción de la imagen usando Gemini
-            // Se usa la descripción generada por la API de la ley, o se genera una nueva si es necesario
-            const imageDescriptionToUse = law.imageDescription || await generateImageDescription(law.name, law.lesson);
-            document.getElementById('law-image-description').textContent = imageDescriptionToUse;
-
-            const lawKeysList = document.getElementById('law-keys');
-            lawKeysList.innerHTML = ''; // Limpiar lista anterior
-            if (law.keys && Array.isArray(law.keys)) {
-                law.keys.forEach(key => {
-                    const li = document.createElement('li');
-                    li.textContent = key;
-                    lawKeysList.appendChild(li);
-                });
-            } else {
-                lawKeysList.innerHTML = '<li>No se encontraron claves.</li>';
-            }
-
-
-            document.getElementById('law-psychological-interpretation').textContent = law.psychologicalInterpretation;
-
-            const lawPracticalObservanceList = document.getElementById('law-practical-observance');
-            lawPracticalObservanceList.innerHTML = ''; // Limpiar lista anterior
-            if (law.practicalObservance && Array.isArray(law.practicalObservance)) {
-                law.practicalObservance.forEach(point => {
-                    const li = document.createElement('li');
-                    li.textContent = point;
-                    lawPracticalObservanceList.appendChild(li);
-                });
-            } else {
-                lawPracticalObservanceList.innerHTML = '<li>No se encontraron puntos de observancia práctica.</li>';
-            }
-
-            document.getElementById('law-psychological-foundations').textContent = law.psychologicalFoundations;
-            document.getElementById('law-conclusion').textContent = law.conclusion;
-
-            // Mostrar todas las secciones de la ley
-            document.getElementById('law-header-section').classList.remove('hidden');
-            document.getElementById('law-fable-section').classList.remove('hidden');
-            document.getElementById('law-illustrative-history-section').classList.remove('hidden'); // Mostrar nueva sección
-            document.getElementById('law-lesson-section').classList.remove('hidden');
-            document.getElementById('law-example-section').classList.remove('hidden');
-            document.getElementById('law-invalidation-section').classList.remove('hidden');
-            document.getElementById('law-image-section').classList.remove('hidden');
-            document.getElementById('law-keys-section').classList.remove('hidden');
-            document.getElementById('law-psychological-interpretation-section').classList.remove('hidden');
-            document.getElementById('law-practical-observance-section').classList.remove('hidden');
-            document.getElementById('law-psychological-foundations-section').classList.remove('hidden');
-            document.getElementById('law-conclusion-section').classList.remove('hidden');
+            carouselContainer.classList.remove('hidden');
+            carouselNav.classList.remove('hidden');
 
         } catch (error) {
-            console.error("Error al obtener o procesar la ley:", error);
-            lawContentDiv.innerHTML = '<p class="text-red-500 text-center">Ocurrió un error al cargar la ley. Por favor, inténtelo de nuevo.</p>';
+            console.error("Error:", error);
+            emptyState.innerHTML = `
+                <div class="empty-state-icon">❌</div>
+                <p class="empty-state-text">Error al cargar. Inténtalo de nuevo.</p>
+            `;
+            emptyState.classList.remove('hidden');
         } finally {
-            // Ocultar indicador de carga
             loadingIndicator.classList.add('hidden');
-            generateButton.disabled = false; // Habilitar botón
+            generateButton.disabled = false;
         }
     }
 
-    // Mostrar una ley al cargar la página por primera vez
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (lawData) {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') previousSlide();
+        }
+    });
+
+    // Auto-load a law when page loads
     window.onload = displayLaw;
   </script>
 </body>
