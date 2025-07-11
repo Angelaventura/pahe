@@ -1,126 +1,3 @@
-<?php
-// calendar.php - Calendario completo con API y frontend
-session_start();
-
-// Configuración
-$tasksFile = 'tasks.json';
-
-// Función para cargar tareas
-function loadTasks($file) {
-    if (!file_exists($file)) {
-        file_put_contents($file, json_encode([], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-        return [];
-    }
-    $json = file_get_contents($file);
-    return json_decode($json, true) ?: [];
-}
-
-// Función para guardar tareas
-function saveTasks($file, $tasks) {
-    $json = json_encode($tasks, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-    return file_put_contents($file, $json) !== false;
-}
-
-// Manejar peticiones AJAX
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
-    header('Content-Type: application/json');
-    
-    $tasks = loadTasks($tasksFile);
-    $response = ['success' => false, 'message' => 'Acción no válida'];
-    
-    switch ($_POST['action']) {
-        case 'get_tasks':
-            $response = ['success' => true, 'tasks' => $tasks];
-            break;
-            
-        case 'create_task':
-            $newTask = [
-                'id' => time() . rand(1000, 9999),
-                'title' => $_POST['title'] ?? '',
-                'description' => $_POST['description'] ?? '',
-                'date' => $_POST['date'] ?? '',
-                'time' => $_POST['time'] ?? '',
-                'priority' => $_POST['priority'] ?? 'low',
-                'completed' => false,
-                'created_at' => date('Y-m-d H:i:s')
-            ];
-            
-            $tasks[] = $newTask;
-            if (saveTasks($tasksFile, $tasks)) {
-                $response = ['success' => true, 'task' => $newTask, 'message' => 'Tarea creada exitosamente'];
-            } else {
-                $response = ['success' => false, 'message' => 'Error al guardar la tarea'];
-            }
-            break;
-            
-        case 'update_task':
-            $id = $_POST['id'] ?? '';
-            $found = false;
-            
-            foreach ($tasks as &$task) {
-                if ($task['id'] == $id) {
-                    $task['title'] = $_POST['title'] ?? $task['title'];
-                    $task['description'] = $_POST['description'] ?? $task['description'];
-                    $task['date'] = $_POST['date'] ?? $task['date'];
-                    $task['time'] = $_POST['time'] ?? $task['time'];
-                    $task['priority'] = $_POST['priority'] ?? $task['priority'];
-                    $task['completed'] = isset($_POST['completed']) ? (bool)$_POST['completed'] : $task['completed'];
-                    $task['updated_at'] = date('Y-m-d H:i:s');
-                    $found = true;
-                    break;
-                }
-            }
-            
-            if ($found && saveTasks($tasksFile, $tasks)) {
-                $response = ['success' => true, 'message' => 'Tarea actualizada exitosamente'];
-            } else {
-                $response = ['success' => false, 'message' => 'Error al actualizar la tarea'];
-            }
-            break;
-            
-        case 'delete_task':
-            $id = $_POST['id'] ?? '';
-            $originalCount = count($tasks);
-            
-            $tasks = array_filter($tasks, function($task) use ($id) {
-                return $task['id'] != $id;
-            });
-            
-            $tasks = array_values($tasks); // Reindexar array
-            
-            if (count($tasks) < $originalCount && saveTasks($tasksFile, $tasks)) {
-                $response = ['success' => true, 'message' => 'Tarea eliminada exitosamente'];
-            } else {
-                $response = ['success' => false, 'message' => 'Error al eliminar la tarea'];
-            }
-            break;
-            
-        case 'toggle_complete':
-            $id = $_POST['id'] ?? '';
-            $found = false;
-            
-            foreach ($tasks as &$task) {
-                if ($task['id'] == $id) {
-                    $task['completed'] = !$task['completed'];
-                    $task['updated_at'] = date('Y-m-d H:i:s');
-                    $found = true;
-                    break;
-                }
-            }
-            
-            if ($found && saveTasks($tasksFile, $tasks)) {
-                $response = ['success' => true, 'message' => 'Estado de tarea actualizado'];
-            } else {
-                $response = ['success' => false, 'message' => 'Error al actualizar el estado'];
-            }
-            break;
-    }
-    
-    echo json_encode($response);
-    exit;
-}
-?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -652,30 +529,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             background: #c0392b;
         }
 
-        .loading {
-            opacity: 0.6;
-            pointer-events: none;
-        }
-
-        .alert {
-            padding: 12px;
-            margin-bottom: 16px;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
         @media (max-width: 768px) {
             .header {
                 padding: 12px 16px;
@@ -789,7 +642,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 <h3 class="modal-title" id="modalTitle">Nueva Tarea</h3>
                 <button class="close-btn" onclick="closeTaskModal()">×</button>
             </div>
-            <div id="alertContainer"></div>
             <form id="taskForm">
                 <div class="form-group">
                     <label class="form-label">Título de la tarea</label>
@@ -835,110 +687,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             loadTasks();
             updateCalendar();
             updateCurrentDate();
+            updateTodayTasks();
             updateTodayDate();
         }
 
-        // Cargar tareas desde el servidor
-        async function loadTasks() {
-            try {
-                const response = await fetch('', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: 'action=get_tasks'
-                });
-                
-                const data = await response.json();
-                if (data.success) {
-                    tasks = data.tasks || [];
-                    updateTodayTasks();
-                } else {
-                    showAlert('Error al cargar las tareas', 'error');
+        // Cargar tareas desde memoria
+        function loadTasks() {
+            // Algunas tareas de ejemplo
+            tasks = [
+                {
+                    id: 1,
+                    title: "Reunión de equipo",
+                    description: "Reunión semanal con el equipo",
+                    date: formatDate(new Date()),
+                    time: "09:00",
+                    priority: "high",
+                    completed: false
+                },
+                {
+                    id: 2,
+                    title: "Revisar propuesta",
+                    description: "Revisar la propuesta del cliente",
+                    date: formatDate(new Date(Date.now() + 24 * 60 * 60 * 1000)),
+                    time: "14:30",
+                    priority: "medium",
+                    completed: false
                 }
-            } catch (error) {
-                console.error('Error:', error);
-                showAlert('Error de conexión', 'error');
-            }
+            ];
         }
 
-        // Guardar tarea en el servidor
-        async function saveTaskToServer(taskData, isEdit = false) {
-            const action = isEdit ? 'update_task' : 'create_task';
-            const body = new URLSearchParams({
-                action: action,
-                ...taskData
-            });
-
-            try {
-                const response = await fetch('', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: body.toString()
-                });
-                
-                const data = await response.json();
-                return data;
-            } catch (error) {
-                console.error('Error:', error);
-                return { success: false, message: 'Error de conexión' };
-            }
-        }
-
-        // Eliminar tarea del servidor
-        async function deleteTaskFromServer(taskId) {
-            try {
-                const response = await fetch('', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `action=delete_task&id=${taskId}`
-                });
-                
-                const data = await response.json();
-                return data;
-            } catch (error) {
-                console.error('Error:', error);
-                return { success: false, message: 'Error de conexión' };
-            }
-        }
-
-        // Alternar estado de completado
-        async function toggleTaskCompletionOnServer(taskId) {
-            try {
-                const response = await fetch('', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `action=toggle_complete&id=${taskId}`
-                });
-                
-                const data = await response.json();
-                return data;
-            } catch (error) {
-                console.error('Error:', error);
-                return { success: false, message: 'Error de conexión' };
-            }
-        }
-
-        // Mostrar alerta
-        function showAlert(message, type = 'success') {
-            const alertContainer = document.getElementById('alertContainer');
-            const alertClass = type === 'success' ? 'alert-success' : 'alert-error';
-            
-            alertContainer.innerHTML = `
-                <div class="alert ${alertClass}">
-                    ${message}
-                </div>
-            `;
-            
-            setTimeout(() => {
-                alertContainer.innerHTML = '';
-            }, 3000);
+        // Guardar tareas en memoria
+        function saveTasks() {
+            // En una aplicación real, aquí guardarías en una base de datos
+            console.log('Tareas guardadas:', tasks);
         }
 
         // Cambiar vista
@@ -984,362 +765,382 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         function updateCurrentDate() {
             const dateElement = document.getElementById('currentDate');
             if (currentView === 'week') {
-                const startWeek = getWeek
-
-// Actualizar fecha actual en el header
-function updateCurrentDate() {
-    const dateElement = document.getElementById('currentDate');
-    if (currentView === 'week') {
-        const startWeek = getWeekStart(currentDate);
-        const endWeek = new Date(startWeek);
-        endWeek.setDate(startWeek.getDate() + 6);
-        
-        const startMonth = startWeek.toLocaleDateString('es-ES', { month: 'short' });
-        const endMonth = endWeek.toLocaleDateString('es-ES', { month: 'short' });
-        
-        if (startMonth === endMonth) {
-            dateElement.textContent = `${startWeek.getDate()} - ${endWeek.getDate()} ${startMonth} ${startWeek.getFullYear()}`;
-        } else {
-            dateElement.textContent = `${startWeek.getDate()} ${startMonth} - ${endWeek.getDate()} ${endMonth} ${startWeek.getFullYear()}`;
+                const startWeek = getWeekStart(currentDate);
+                const endWeek = new Date(startWeek);
+                endWeek.setDate(endWeek.getDate() + 6);
+                dateElement.textContent = `${formatDateDisplay(startWeek)} - ${formatDateDisplay(endWeek)}`;
+            } else {
+                dateElement.textContent = currentDate.toLocaleDateString('es-ES', { 
+                    month: 'long', 
+                    year: 'numeric' 
+                });
+            }
         }
-    } else {
-        dateElement.textContent = currentDate.toLocaleDateString('es-ES', { 
-            month: 'long', 
-            year: 'numeric' 
-        });
-    }
-}
 
-// Obtener el inicio de la semana
-function getWeekStart(date) {
-    const d = new Date(date);
-    const day = d.getDay();
-    const diff = d.getDate() - day;
-    return new Date(d.setDate(diff));
-}
-
-// Actualizar fecha de hoy
-function updateTodayDate() {
-    const todayElement = document.getElementById('todayDate');
-    const today = new Date();
-    todayElement.textContent = today.toLocaleDateString('es-ES', { 
-        weekday: 'long', 
-        day: 'numeric', 
-        month: 'long' 
-    });
-}
-
-// Actualizar calendario
-function updateCalendar() {
-    if (currentView === 'week') {
-        renderWeekView();
-    } else {
-        renderMonthView();
-    }
-}
-
-// Renderizar vista semanal
-function renderWeekView() {
-    const weekStart = getWeekStart(currentDate);
-    const cells = document.querySelectorAll('.day-cell');
-    
-    cells.forEach((cell, index) => {
-        const cellDate = new Date(weekStart);
-        cellDate.setDate(weekStart.getDate() + index);
-        
-        const dateStr = cellDate.toISOString().split('T')[0];
-        cell.dataset.date = dateStr;
-        
-        // Limpiar contenido anterior
-        cell.innerHTML = '';
-        
-        // Agregar tareas para esta fecha
-        const dayTasks = tasks.filter(task => task.date === dateStr);
-        dayTasks.forEach(task => {
-            const taskElement = createTaskElement(task);
-            cell.appendChild(taskElement);
-        });
-    });
-}
-
-// Renderizar vista mensual
-function renderMonthView() {
-    const monthView = document.getElementById('monthView');
-    const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-    const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-    const startDate = getWeekStart(firstDay);
-    
-    // Limpiar vista anterior
-    monthView.innerHTML = '';
-    
-    // Agregar headers de días
-    const dayHeaders = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-    dayHeaders.forEach(day => {
-        const header = document.createElement('div');
-        header.className = 'day-header';
-        header.textContent = day;
-        monthView.appendChild(header);
-    });
-    
-    // Agregar celdas de días
-    const totalCells = 42; // 6 semanas x 7 días
-    for (let i = 0; i < totalCells; i++) {
-        const cellDate = new Date(startDate);
-        cellDate.setDate(startDate.getDate() + i);
-        
-        const cell = document.createElement('div');
-        cell.className = 'month-day';
-        
-        if (cellDate.getMonth() !== currentDate.getMonth()) {
-            cell.classList.add('other-month');
+        // Obtener inicio de semana
+        function getWeekStart(date) {
+            const d = new Date(date);
+            const day = d.getDay();
+            const diff = d.getDate() - day;
+            return new Date(d.setDate(diff));
         }
-        
-        if (isToday(cellDate)) {
-            cell.classList.add('today');
+
+        // Formatear fecha
+        function formatDate(date) {
+            return date.toISOString().split('T')[0];
         }
-        
-        const dateStr = cellDate.toISOString().split('T')[0];
-        cell.dataset.date = dateStr;
-        cell.onclick = () => openTaskModal(dateStr);
-        
-        // Número del día
-        const dayNumber = document.createElement('div');
-        dayNumber.className = 'month-day-number';
-        dayNumber.textContent = cellDate.getDate();
-        cell.appendChild(dayNumber);
-        
-        // Agregar tareas para esta fecha
-        const dayTasks = tasks.filter(task => task.date === dateStr);
-        dayTasks.forEach(task => {
-            const taskElement = createTaskElement(task);
-            cell.appendChild(taskElement);
-        });
-        
-        monthView.appendChild(cell);
-    }
-}
 
-// Crear elemento de tarea
-function createTaskElement(task) {
-    const taskElement = document.createElement('div');
-    taskElement.className = `task ${task.priority}-priority`;
-    taskElement.textContent = task.title;
-    taskElement.onclick = (e) => {
-        e.stopPropagation();
-        editTask(task);
-    };
-    
-    if (task.completed) {
-        taskElement.classList.add('completed');
-    }
-    
-    return taskElement;
-}
+        function formatDateDisplay(date) {
+            return date.toLocaleDateString('es-ES', { 
+                day: 'numeric', 
+                month: 'short' 
+            });
+        }
 
-// Verificar si es hoy
-function isToday(date) {
-    const today = new Date();
-    return date.getDate() === today.getDate() &&
-           date.getMonth() === today.getMonth() &&
-           date.getFullYear() === today.getFullYear();
-}
+        // Actualizar calendario
+        function updateCalendar() {
+            if (currentView === 'week') {
+                renderWeekView();
+            } else {
+                renderMonthView();
+            }
+            updateTodayTasks();
+        }
 
-// Actualizar tareas de hoy
-function updateTodayTasks() {
-    const todayTasksContainer = document.getElementById('todayTasks');
-    const today = new Date().toISOString().split('T')[0];
-    const todayTasks = tasks.filter(task => task.date === today);
-    
-    todayTasksContainer.innerHTML = '';
-    
-    if (todayTasks.length === 0) {
-        todayTasksContainer.innerHTML = '<div class="no-tasks">No hay tareas para hoy</div>';
-        return;
-    }
-    
-    todayTasks.forEach(task => {
-        const taskElement = createTodayTaskElement(task);
-        todayTasksContainer.appendChild(taskElement);
-    });
-}
-
-// Crear elemento de tarea para la sección de hoy
-function createTodayTaskElement(task) {
-    const taskElement = document.createElement('div');
-    taskElement.className = `today-task ${task.completed ? 'completed' : ''}`;
-    
-    taskElement.innerHTML = `
-        <div class="task-checkbox ${task.completed ? 'completed' : ''}" 
-             onclick="toggleTaskCompletion('${task.id}')"></div>
-        <div class="task-info">
-            <h3 class="task-title-today ${task.completed ? 'completed' : ''}">${task.title}</h3>
-            <div class="task-meta">
-                ${task.time ? `<div class="task-time">⏰ ${task.time}</div>` : ''}
-                <div class="task-priority-badge ${task.priority}">
-                    ${task.priority === 'high' ? '🔴' : task.priority === 'medium' ? '🟡' : '🔵'}
-                    ${task.priority === 'high' ? 'Alta' : task.priority === 'medium' ? 'Media' : 'Baja'}
-                </div>
-            </div>
-        </div>
-        <div class="task-actions">
-            <button class="task-action-btn" onclick="editTask(${JSON.stringify(task).replace(/"/g, '&quot;')})" title="Editar">
-                ✏️
-            </button>
-            <button class="task-action-btn" onclick="deleteTask('${task.id}')" title="Eliminar">
-                🗑️
-            </button>
-        </div>
-    `;
-    
-    return taskElement;
-}
-
-// Alternar completado de tarea
-async function toggleTaskCompletion(taskId) {
-    const result = await toggleTaskCompletionOnServer(taskId);
-    if (result.success) {
-        loadTasks(); // Recargar tareas
-        updateCalendar(); // Actualizar calendario
-    } else {
-        showAlert(result.message, 'error');
-    }
-}
-
-// Abrir modal de tarea
-function openTaskModal(date = null) {
-    const modal = document.getElementById('taskModal');
-    const form = document.getElementById('taskForm');
-    const modalTitle = document.getElementById('modalTitle');
-    const deleteBtn = document.getElementById('deleteBtn');
-    
-    // Limpiar formulario
-    form.reset();
-    editingTaskId = null;
-    
-    modalTitle.textContent = 'Nueva Tarea';
-    deleteBtn.style.display = 'none';
-    
-    // Si se proporciona una fecha, establecerla
-    if (date !== null) {
-        const dateInput = document.getElementById('taskDate');
-        if (typeof date === 'string') {
-            dateInput.value = date;
-        } else {
+        // Renderizar vista semanal
+        function renderWeekView() {
             const weekStart = getWeekStart(currentDate);
-            const cellDate = new Date(weekStart);
-            cellDate.setDate(weekStart.getDate() + date);
-            dateInput.value = cellDate.toISOString().split('T')[0];
+            const dayCells = document.querySelectorAll('.day-cell');
+            
+            dayCells.forEach((cell, index) => {
+                const cellDate = new Date(weekStart);
+                cellDate.setDate(cellDate.getDate() + index);
+                
+                cell.innerHTML = '';
+                cell.setAttribute('data-date', formatDate(cellDate));
+                
+                // Agregar número del día
+                const dayNumber = document.createElement('div');
+                dayNumber.style.fontSize = '12px';
+                dayNumber.style.fontWeight = '600';
+                dayNumber.style.marginBottom = '4px';
+                dayNumber.style.color = '#787774';
+                dayNumber.textContent = cellDate.getDate();
+                cell.appendChild(dayNumber);
+                
+                // Agregar tareas del día
+                const dayTasks = tasks.filter(task => task.date === formatDate(cellDate));
+                dayTasks.forEach(task => {
+                    const taskElement = createTaskElement(task);
+                    cell.appendChild(taskElement);
+                });
+            });
         }
-    } else {
-        // Establecer fecha actual por defecto
-        const today = new Date();
-        document.getElementById('taskDate').value = today.toISOString().split('T')[0];
-    }
-    
-    modal.style.display = 'block';
-}
 
-// Cerrar modal
-function closeTaskModal() {
-    document.getElementById('taskModal').style.display = 'none';
-    document.getElementById('alertContainer').innerHTML = '';
-}
+        // Renderizar vista mensual
+        function renderMonthView() {
+            const monthView = document.getElementById('monthView');
+            monthView.innerHTML = '';
+            
+            // Headers de días
+            const dayHeaders = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+            dayHeaders.forEach(day => {
+                const header = document.createElement('div');
+                header.className = 'day-header';
+                header.textContent = day;
+                monthView.appendChild(header);
+            });
+            
+            // Días del mes
+            const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+            const startDate = new Date(firstDay);
+            startDate.setDate(startDate.getDate() - firstDay.getDay());
+            
+            for (let i = 0; i < 42; i++) {
+                const cellDate = new Date(startDate);
+                cellDate.setDate(cellDate.getDate() + i);
+                
+                const dayCell = document.createElement('div');
+                dayCell.className = 'month-day';
+                dayCell.setAttribute('data-date', formatDate(cellDate));
+                dayCell.onclick = () => openTaskModal(formatDate(cellDate));
+                
+                if (cellDate.getMonth() !== currentDate.getMonth()) {
+                    dayCell.classList.add('other-month');
+                }
+                
+                if (formatDate(cellDate) === formatDate(new Date())) {
+                    dayCell.classList.add('today');
+                }
+                
+                const dayNumber = document.createElement('div');
+                dayNumber.className = 'month-day-number';
+                dayNumber.textContent = cellDate.getDate();
+                dayCell.appendChild(dayNumber);
+                
+                // Agregar tareas
+                const dayTasks = tasks.filter(task => task.date === formatDate(cellDate));
+                dayTasks.forEach(task => {
+                    const taskElement = createTaskElement(task);
+                    dayCell.appendChild(taskElement);
+                });
+                
+                monthView.appendChild(dayCell);
+            }
+        }
 
-// Editar tarea
-function editTask(task) {
-    const modal = document.getElementById('taskModal');
-    const modalTitle = document.getElementById('modalTitle');
-    const deleteBtn = document.getElementById('deleteBtn');
-    
-    modalTitle.textContent = 'Editar Tarea';
-    deleteBtn.style.display = 'block';
-    
-    // Llenar formulario con datos de la tarea
-    document.getElementById('taskTitle').value = task.title;
-    document.getElementById('taskDescription').value = task.description || '';
-    document.getElementById('taskDate').value = task.date;
-    document.getElementById('taskTime').value = task.time || '';
-    document.getElementById('taskPriority').value = task.priority;
-    
-    editingTaskId = task.id;
-    modal.style.display = 'block';
-}
+        // Crear elemento de tarea
+        function createTaskElement(task) {
+            const taskElement = document.createElement('div');
+            taskElement.className = `task ${task.priority}-priority`;
+            if (task.completed) {
+                taskElement.classList.add('completed');
+            }
+            taskElement.textContent = task.title;
+            taskElement.onclick = (e) => {
+                e.stopPropagation();
+                editTask(task.id);
+            };
+            return taskElement;
+        }
 
-// Eliminar tarea
-async function deleteTask(taskId = null) {
-    const id = taskId || editingTaskId;
-    if (!id) return;
-    
-    if (!confirm('¿Estás seguro de que quieres eliminar esta tarea?')) {
-        return;
-    }
-    
-    const result = await deleteTaskFromServer(id);
-    if (result.success) {
-        showAlert(result.message, 'success');
-        loadTasks(); // Recargar tareas
-        updateCalendar(); // Actualizar calendario
-        closeTaskModal();
-    } else {
-        showAlert(result.message, 'error');
-    }
-}
+        // Abrir modal de tarea
+        function openTaskModal(date = null) {
+            const modal = document.getElementById('taskModal');
+            const form = document.getElementById('taskForm');
+            
+            // Resetear formulario
+            form.reset();
+            editingTaskId = null;
+            
+            document.getElementById('modalTitle').textContent = 'Nueva Tarea';
+            document.getElementById('deleteBtn').style.display = 'none';
+            
+            // Si se proporciona una fecha, usarla
+            if (date !== null) {
+                if (typeof date === 'string') {
+                    document.getElementById('taskDate').value = date;
+                } else {
+                    const weekStart = getWeekStart(currentDate);
+                    const cellDate = new Date(weekStart);
+                    cellDate.setDate(cellDate.getDate() + date);
+                    document.getElementById('taskDate').value = formatDate(cellDate);
+                }
+            } else {
+                document.getElementById('taskDate').value = formatDate(new Date());
+            }
+            
+            modal.style.display = 'block';
+        }
 
-// Manejar envío del formulario
-document.getElementById('taskForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    const formData = {
-        title: document.getElementById('taskTitle').value,
-        description: document.getElementById('taskDescription').value,
-        date: document.getElementById('taskDate').value,
-        time: document.getElementById('taskTime').value,
-        priority: document.getElementById('taskPriority').value
-    };
-    
-    if (editingTaskId) {
-        formData.id = editingTaskId;
-    }
-    
-    const saveBtn = document.getElementById('saveBtn');
-    saveBtn.disabled = true;
-    saveBtn.textContent = 'Guardando...';
-    
-    const result = await saveTaskToServer(formData, !!editingTaskId);
-    
-    if (result.success) {
-        showAlert(result.message, 'success');
-        loadTasks(); // Recargar tareas
-        updateCalendar(); // Actualizar calendario
-        closeTaskModal();
-    } else {
-        showAlert(result.message, 'error');
-    }
-    
-    saveBtn.disabled = false;
-    saveBtn.textContent = 'Guardar';
-});
+        // Cerrar modal
+        function closeTaskModal() {
+            document.getElementById('taskModal').style.display = 'none';
+        }
 
-// Cerrar modal al hacer clic fuera
-window.addEventListener('click', function(e) {
-    const modal = document.getElementById('taskModal');
-    if (e.target === modal) {
-        closeTaskModal();
-    }
-});
+        // Editar tarea
+        function editTask(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (!task) return;
+            
+            editingTaskId = taskId;
+            
+            document.getElementById('modalTitle').textContent = 'Editar Tarea';
+            document.getElementById('taskTitle').value = task.title;
+            document.getElementById('taskDescription').value = task.description;
+            document.getElementById('taskDate').value = task.date;
+            document.getElementById('taskTime').value = task.time;
+            document.getElementById('taskPriority').value = task.priority;
+            document.getElementById('deleteBtn').style.display = 'inline-block';
+            
+            document.getElementById('taskModal').style.display = 'block';
+        }
 
-// Manejar tecla ESC para cerrar modal
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        closeTaskModal();
-    }
-});
+        // Guardar tarea
+        function saveTask() {
+            const title = document.getElementById('taskTitle').value;
+            const description = document.getElementById('taskDescription').value;
+            const date = document.getElementById('taskDate').value;
+            const time = document.getElementById('taskTime').value;
+            const priority = document.getElementById('taskPriority').value;
+            
+            if (!title || !date) {
+                alert('Por favor completa los campos obligatorios');
+                return;
+            }
+            
+            if (editingTaskId) {
+                // Editar tarea existente
+                const taskIndex = tasks.findIndex(t => t.id === editingTaskId);
+                tasks[taskIndex] = {
+                    ...tasks[taskIndex],
+                    title,
+                    description,
+                    date,
+                    time,
+                    priority
+                };
+            } else {
+                // Nueva tarea
+                const newTask = {
+                    id: Date.now(),
+                    title,
+                    description,
+                    date,
+                    time,
+                    priority,
+                    completed: false
+                };
+                tasks.push(newTask);
+            }
+            
+            saveTasks();
+            updateCalendar();
+            closeTaskModal();
+        }
 
-// Inicializar cuando se carga la página
-document.addEventListener('DOMContentLoaded', init);
+        // Eliminar tarea
+        function deleteTask() {
+            if (editingTaskId && confirm('¿Estás seguro de que quieres eliminar esta tarea?')) {
+                tasks = tasks.filter(t => t.id !== editingTaskId);
+                saveTasks();
+                updateCalendar();
+                closeTaskModal();
+            }
+        }
 
-// Actualizar tareas cada 30 segundos
-setInterval(loadTasks, 30000);
+        // Actualizar fecha de hoy
+        function updateTodayDate() {
+            const today = new Date();
+            const todayDateElement = document.getElementById('todayDate');
+            todayDateElement.textContent = today.toLocaleDateString('es-ES', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long'
+            });
+        }
+
+        // Actualizar tareas de hoy
+        function updateTodayTasks() {
+            const today = formatDate(new Date());
+            const todayTasks = tasks.filter(task => task.date === today);
+            const todayTasksContainer = document.getElementById('todayTasks');
+            
+            todayTasksContainer.innerHTML = '';
+            
+            if (todayTasks.length === 0) {
+                todayTasksContainer.innerHTML = '<div class="no-tasks">No tienes tareas pendientes para hoy 🎉</div>';
+                return;
+            }
+            
+            // Ordenar por hora
+            todayTasks.sort((a, b) => {
+                if (!a.time) return 1;
+                if (!b.time) return -1;
+                return a.time.localeCompare(b.time);
+            });
+            
+            todayTasks.forEach(task => {
+                const taskElement = createTodayTaskElement(task);
+                todayTasksContainer.appendChild(taskElement);
+            });
+        }
+
+        // Crear elemento de tarea para la sección de hoy
+        function createTodayTaskElement(task) {
+            const taskElement = document.createElement('div');
+            taskElement.className = `today-task ${task.completed ? 'completed' : ''}`;
+            
+            const checkbox = document.createElement('div');
+            checkbox.className = `task-checkbox ${task.completed ? 'completed' : ''}`;
+            checkbox.onclick = () => toggleTaskCompletion(task.id);
+            
+            const taskInfo = document.createElement('div');
+            taskInfo.className = 'task-info';
+            
+            const taskTitle = document.createElement('div');
+            taskTitle.className = `task-title-today ${task.completed ? 'completed' : ''}`;
+            taskTitle.textContent = task.title;
+            
+            const taskMeta = document.createElement('div');
+            taskMeta.className = 'task-meta';
+            
+            if (task.time) {
+                const timeSpan = document.createElement('span');
+                timeSpan.className = 'task-time';
+                timeSpan.innerHTML = `🕐 ${task.time}`;
+                taskMeta.appendChild(timeSpan);
+            }
+            
+            const priorityBadge = document.createElement('span');
+            priorityBadge.className = `task-priority-badge ${task.priority}`;
+            const priorityText = {
+                high: 'Alta',
+                medium: 'Media',
+                low: 'Baja'
+            };
+            priorityBadge.textContent = priorityText[task.priority];
+            taskMeta.appendChild(priorityBadge);
+            
+            taskInfo.appendChild(taskTitle);
+            if (task.description) {
+                const description = document.createElement('div');
+                description.style.fontSize = '14px';
+                description.style.color = '#787774';
+                description.textContent = task.description;
+                taskInfo.appendChild(description);
+            }
+            taskInfo.appendChild(taskMeta);
+            
+            const taskActions = document.createElement('div');
+            taskActions.className = 'task-actions';
+            
+            const editBtn = document.createElement('button');
+            editBtn.className = 'task-action-btn';
+            editBtn.innerHTML = '✏️';
+            editBtn.title = 'Editar tarea';
+            editBtn.onclick = (e) => {
+                e.stopPropagation();
+                editTask(task.id);
+            };
+            
+            taskActions.appendChild(editBtn);
+            
+            taskElement.appendChild(checkbox);
+            taskElement.appendChild(taskInfo);
+            taskElement.appendChild(taskActions);
+            
+            return taskElement;
+        }
+
+        // Alternar completado de tarea
+        function toggleTaskCompletion(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (task) {
+                task.completed = !task.completed;
+                saveTasks();
+                updateCalendar();
+                updateTodayTasks();
+            }
+        }
+
+        // Event listeners
+        document.getElementById('taskForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            saveTask();
+        });
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = (event) => {
+            const modal = document.getElementById('taskModal');
+            if (event.target === modal) {
+                closeTaskModal();
+            }
+        };
+
+        // Inicializar
+        init();
     </script>
 </body>
 </html>
